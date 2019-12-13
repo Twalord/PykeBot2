@@ -4,9 +4,12 @@ import pathlib
 import time
 
 
-def setup_logger(console_level=logging.INFO, log_file_level=logging.DEBUG, logs_to_keep=20, create_log_files=True, path_to_logs=None):
+def setup_logger(logger_name: str = 'pb_logger', console_level=logging.INFO, log_file_level=logging.DEBUG, logs_to_keep: int = 20,
+                 create_log_files: bool = True, path_to_logs: pathlib.Path = None) -> None:
     """
     Sets up a logger with formatting, log file creation, settable console and log file logging levels as well as automatic deletion of old log files.
+    :param logger_name: Name of the logger profile, standard is pb_logger, this should not be changed except for testing
+    :type logger_name: str
     :param console_level: logging level on console, standard is INFO
     :type console_level: logging level
     :param log_file_level: logging level in log file, standard is DEBUG
@@ -17,7 +20,7 @@ def setup_logger(console_level=logging.INFO, log_file_level=logging.DEBUG, logs_
     :type create_log_files: bool
     :param path_to_logs: path to the directory for saving the logs, standard is current working directory / logs
     :type path_to_logs: pathlib.PATH
-    :return: None, but the logger may now be accessed via logging.getLogger('pb_logger')
+    :return: None, but the logger may now be accessed via logging.getLogger(logger_name), standard is pb_logger
     :rtype: None
     """
 
@@ -51,10 +54,10 @@ def setup_logger(console_level=logging.INFO, log_file_level=logging.DEBUG, logs_
     if path_to_logs is None:
         path_to_logs = pathlib.Path.cwd() / "logs"
 
-    assert not logging.getLogger('pb_logger').hasHandlers()
+    assert len(logging.getLogger(logger_name).handlers) == 0, f"Logger {logger_name} already has the handler: {logging.getLogger(logger_name).handlers} "
 
     # create logger
-    pb_logger = logging.getLogger('pb_logger')
+    pb_logger = logging.getLogger(logger_name)
     pb_logger.setLevel(logging.DEBUG)
 
     # if create_log_files is True, check for logs folder or make one
@@ -88,10 +91,11 @@ def setup_logger(console_level=logging.INFO, log_file_level=logging.DEBUG, logs_
     ch.setFormatter(formatter)
 
     # add handlers to logger
-    pb_logger.addHandler(fh)
+    if create_log_files and fh_did_not_fail:
+        pb_logger.addHandler(fh)
     pb_logger.addHandler(ch)
 
-    pb_logger.info("Finished setting up PykeBot logger")
+    pb_logger.info(f"Finished setting up {logger_name} logger")
 
     if not fh_did_not_fail:
         pb_logger.warning("Logger File handler failed due to missing permissions, no log file will be created")

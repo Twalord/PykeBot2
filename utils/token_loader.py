@@ -7,7 +7,7 @@ from models.errors import TokenLoadingError
 logger = getLogger('pb_logger')
 
 
-def load_token(name, try_env=True, hide_token=True, path_to_token=None):
+def load_token(name: str, try_env: bool = True, hide_token: bool = True, path_to_token: pathlib.Path = None) -> str:
     """
     Loads the specified token, trying either the given path or the cwd and if set the env variables
     :param name: Name of the token, as in the file_name or the name of the env variable
