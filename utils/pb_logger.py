@@ -4,8 +4,8 @@ import pathlib
 import time
 
 
-def setup_logger(logger_name: str = 'pb_logger', console_level=logging.INFO, log_file_level=logging.DEBUG, logs_to_keep: int = 20,
-                 create_log_files: bool = True, path_to_logs: pathlib.Path = None) -> None:
+def setup_logger(logger_name: str = 'pb_logger', console_level=logging.INFO, log_file_level=logging.DEBUG,
+                 logs_to_keep: int = 20, create_log_files: bool = True, path_to_logs: pathlib.Path = None) -> None:
     """
     Sets up a logger with formatting, log file creation, settable console and log file logging levels as well as automatic deletion of old log files.
     :param logger_name: Name of the logger profile, standard is pb_logger, this should not be changed except for testing
@@ -69,7 +69,7 @@ def setup_logger(logger_name: str = 'pb_logger', console_level=logging.INFO, log
 
             # check if old logs need to be deleted
             if not logs_to_keep < 0:
-                if len(list((path_to_logs.glob('*.log')))) > logs_to_keep:
+                while len(list((path_to_logs.glob('*.log')))) > logs_to_keep:
                     delete_oldest_log(path_to_logs)
 
             # create file handler
