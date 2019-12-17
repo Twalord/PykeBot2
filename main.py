@@ -1,3 +1,7 @@
+"""
+:author: Jonathan Decker
+"""
+
 from utils import pb_logger
 import logging
 from event_loop_master import run_main_loop
