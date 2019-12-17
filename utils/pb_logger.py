@@ -7,7 +7,7 @@ import time
 def setup_logger(logger_name: str = 'pb_logger', console_level=logging.INFO, log_file_level=logging.DEBUG,
                  logs_to_keep: int = 20, create_log_files: bool = True, path_to_logs: pathlib.Path = None) -> None:
     """
-    Sets up a logger with formatting, log file creation, settable console and log file logging levels as well as automatic deletion of old log files.
+    :description: Sets up a logger with formatting, log file creation, settable console and log file logging levels as well as automatic deletion of old log files.
     :param logger_name: Name of the logger profile, standard is pb_logger, this should not be changed except for testing
     :type logger_name: str
     :param console_level: logging level on console, standard is INFO
@@ -26,7 +26,7 @@ def setup_logger(logger_name: str = 'pb_logger', console_level=logging.INFO, log
 
     def delete_oldest_log(path_to_logs):
         """
-        Finds and deletes the oldest .log file in the given file path
+        :description: Finds and deletes the oldest .log file in the given file path
         :param path_to_logs: file path to the log folder
         :type path_to_logs: pathlib.PATH
         :return: None

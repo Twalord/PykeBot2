@@ -9,7 +9,7 @@ logger = getLogger('pb_logger')
 
 def load_token(name: str, try_env: bool = True, hide_token: bool = True, path_to_token: pathlib.Path = None) -> str:
     """
-    Loads the specified token, trying either the given path or the cwd and if set the env variables
+    :description: Loads the specified token, trying either the given path or the cwd and if set the env variables
     :param name: Name of the token, as in the file_name or the name of the env variable
     :type name: str
     :param try_env: Sets whether environmental variables should be checked if the token is not in the given path, standard is True
