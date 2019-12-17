@@ -1,0 +1,20 @@
+# project configuration
+.idea/
+
+# library
+venv/
+
+# logs
+*.log
+
+# config file
+/pb_config.ini
+
+# discord Token
+/DiscordToken
+
+# generated doc files
+docs/source/generated/
+
+# doc build
+docs/build/
