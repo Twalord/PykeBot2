@@ -1,3 +1,8 @@
+"""
+:author: Jonathan Decker
+"""
+
+
 import asyncio
 from logging import getLogger
 from frontend import discord_interface, frontend_master
@@ -5,13 +10,27 @@ from frontend import discord_interface, frontend_master
 logger = getLogger('pb_logger')
 
 
-async def sample_worker(num):
+async def sample_worker(num: int):
+    """
+    :description: Example for coroutine functionality, does not do any meaningful work.
+    :param num: Number only used to track the worker in logs.
+    :type num: int
+    :return: None
+    :rtype: None
+    """
     while True:
         await asyncio.sleep(1)
         logger.debug(f"Sample worker {num} done")
 
 
 async def dump_que(queue: asyncio.Queue):
+    """
+    :description: Coroutine to dump the contents of a Queue into the log and clear the Queue. Only used for debugging.
+    :param queue: The queue to dump.
+    :type queue: asyncio.Queue
+    :return: None
+    :rtype: None
+    """
     while True:
         query = await queue.get()
         logger.debug(str(query))
@@ -19,6 +38,16 @@ async def dump_que(queue: asyncio.Queue):
 
 
 async def query_forwarder(forward_queue: asyncio.Queue, sub_module_queues: {str: asyncio.Queue}):
+    """
+    :description: Coroutine that manages the forward_queue and reads the forward_to field of incoming queries.
+    Based on the value of the field the query is submitted to the next Queue.
+    :param forward_queue: The forward_queue that is awaited by this Coroutine.
+    :type forward_queue: asyncio.Queue
+    :param sub_module_queues: A dictionary that maps the short names of each sub module to its Queue.
+    :type sub_module_queues: {str: asyncio.Queue}
+    :return: None
+    :rtype: None
+    """
     while True:
         query = await forward_queue.get()
         target_queue = sub_module_queues.get(query.forward_to)
@@ -28,9 +57,10 @@ async def query_forwarder(forward_queue: asyncio.Queue, sub_module_queues: {str:
 
 def run_main_loop():
     """
-    :description: test
-    :return:
-    :rtype:
+    :description: The main loop of the program. Uses asyncio event loop and ensures all main Coroutines.
+    Further all Queue objects are created here as they need to be present when starting the Coroutines.
+    :return: None
+    :rtype: None
     """
     loop = asyncio.get_event_loop()
     try:
