@@ -12,18 +12,21 @@ prefix = ".pb"
 
 
 class PykeBot(commands.Bot):
-    pb_d_queue: asyncio.PriorityQueue
+    forward_queue: asyncio.Queue
+    output_queue: asyncio.Queue
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs, command_prefix=prefix)
+        self.output_queue_listener = self.loop.create_task(output_queue_listener())
 
 
 pb = PykeBot()
 
 
-async def run_discord_bot_loop(pb_d_queue: asyncio.Queue):
+async def run_discord_bot_loop(forward_queue: asyncio.Queue, output_queue: asyncio.Queue):
     d_token = load_token("DiscordToken")
-    pb.pb_d_queue = pb_d_queue
+    pb.forward_queue = forward_queue
+    pb.output_queue = output_queue
     await pb.login(d_token)
     await pb.connect()
 
@@ -45,21 +48,15 @@ async def on_message(message):
             await initiate_query(message)
 
 
+async def output_queue_listener():
+    await pb.wait_until_ready()
+    while not pb.is_closed():
+        query = await pb.output_queue.get()
+        query.discord_channel.send(query.output_message)
+        pb.output_queue.task_done()
+
+
 async def initiate_query(message):
     logger.debug(f"Received query: {str(message.content)}")
     query = Query(message.content, "discord", message.channel)
-    pb.pb_d_queue.put_nowait(query)
-
-"""
-@pb.command(name="ping", pass_context=True)
-async def ping(ctx):
-    logger.debug("Received ping.")
-    await ctx.send("Pong!")
-
-
-@pb.command(name=" ", pass_context=True)
-async def initiate_query(ctx, *args):
-    logger.debug("Received query.")
-    query = Query(args, "discord", ctx)
-    pb.pb_d_queue.put_nowait(query)
-"""
+    pb.forward_queue.put_nowait(query)
