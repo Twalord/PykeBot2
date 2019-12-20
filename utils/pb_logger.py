@@ -1,3 +1,8 @@
+"""
+:author: Jonathan Decker
+"""
+
+
 import logging
 import logging.config
 import pathlib

@@ -1,3 +1,8 @@
+"""
+:author: Jonathan Decker
+"""
+
+
 from logging import getLogger
 import pathlib
 import os
