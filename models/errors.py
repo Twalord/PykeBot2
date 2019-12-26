@@ -2,6 +2,6 @@
 
 class TokenLoadingError(Exception):
     """
-    Raised when load_token is unable to load a token
+    :description: Raised when load_token is unable to load a token
     """
     pass

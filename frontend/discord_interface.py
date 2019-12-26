@@ -39,14 +39,14 @@ class PykeBot(commands.Bot):
 
     def __init__(self, *args, **kwargs):
         """
-        Initialises the bot without Queues and sets up the output queue listener.
+        :description: Initialises the bot without Queues and sets up the output queue listener.
         Is once called when discord_interface is imported.
         :param args:
         :type args:
         :param kwargs:
         :type kwargs:
         """
-        super().__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs, command_prefix=prefix)
         self.output_queue_listener = self.loop.create_task(self.output_queue_listener())
 
 

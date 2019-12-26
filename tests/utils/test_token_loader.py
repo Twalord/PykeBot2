@@ -1,5 +1,4 @@
 from utils import token_loader
-import logging
 import pathlib
 import pytest
 from models.errors import TokenLoadingError
@@ -13,7 +12,6 @@ def test_load_token():
         tmp_token = open(str(tmp_token_path / "tmp"), "w")
         tmp_token.write(token_value)
         tmp_token.close()
-        logger = logging.getLogger("pb_logger")
 
         # test whether test token is correct
         loaded_token = token_loader.load_token("tmp", path_to_token=tmp_token_path)

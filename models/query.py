@@ -13,8 +13,8 @@ logger = logging.getLogger('pb_logger')
 class Query:
     """
     :description: Class for any type of data that is sent around via Queues.
-     Should mainly be created by ingoing interfaces.
-      While processing the query the fields should be further filled out and updated.
+    Should mainly be created by ingoing interfaces.
+    While processing the query the fields should be further filled out and updated.
     """
     command: str
     context_type: str
@@ -47,7 +47,7 @@ class Query:
 
     def __str__(self):
         """
-
+        :description:
         :return: Returns the command followed by the context_type fields for now.
         :rtype: str
         """
