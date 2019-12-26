@@ -8,6 +8,7 @@ import asyncio
 from discord.ext import commands
 from discord import Game
 import datetime
+from discord import Message
 
 from utils.token_loader import load_token
 from models.query import Query
@@ -85,7 +86,7 @@ async def on_ready():
 
 
 @pb.event
-async def on_message(message):
+async def on_message(message: Message):
     """
     :description: Event triggered when a message is send to a viewed channel.
     If the message starts with the prefix (standard: '.pb'), a query is created from the message and forwarded.
@@ -102,7 +103,7 @@ async def on_message(message):
             await initiate_query(message)
 
 
-async def initiate_query(message):
+async def initiate_query(message: Message):
     """
     :description: Creates query object from the given message and submits it to the forward query.
     :param message: A valid message, usually captured by the on_message event.
