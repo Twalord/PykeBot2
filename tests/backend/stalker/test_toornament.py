@@ -5,9 +5,10 @@ import os
 
 
 @pytest.mark.asyncio
-async def test_stalk_toornament_team():
+async def test_positive_stalk_toornament_tournament():
     from backend.stalker import toornament
     from models.data_models import TeamList
+
     url = "https://www.toornament.com/tournaments/2324026559405285376/information"
 
     team_list = await toornament.stalk_toornament_tournament(url)
@@ -19,6 +20,69 @@ async def test_stalk_toornament_team():
 
     # Reads expected results from file, beware encodings
     # best to let a successful test write the expected results
-    with open(os.path.join(sys.path[0], "expected_result_stalk_toornament"), "r", encoding='utf-8') as file:
+    with open(os.path.join(sys.path[0], "expected_result_stalk_toornament_tournament"), "r", encoding='utf-8') as file:
         expected_result = file.read()
         assert extended_result_str == expected_result
+
+
+@pytest.mark.asyncio
+async def test_positive_stalk_toornament_team():
+    from backend.stalker import toornament
+    from models.data_models import Team
+
+    url = "https://www.toornament.com/en_US/tournaments/2324026559405285376/participants/2430790421496733696/"
+
+    team = await toornament.stalk_toornament_team(url)
+
+    assert len(team.player_list) > 0
+    assert isinstance(team, Team)
+
+    extended_result_str = team.extended_str()
+
+    with open(os.path.join(sys.path[0], "expected_result_stalk_toornament_team"), "r", encoding='utf-8') as file:
+        expected_result = file.read()
+        assert extended_result_str == expected_result
+
+
+@pytest.mark.asyncio
+async def test_broken_toornament_link_stalk_toornament_tournament():
+    from backend.stalker import toornament
+    from models.errors import NotFoundResponseError
+
+    broken_url = "https://www.toornament.com/tournaments/2324076559805285376/information"
+
+    with pytest.raises(NotFoundResponseError):
+        team_list = await toornament.stalk_toornament_tournament(broken_url)
+
+
+@pytest.mark.asyncio
+async def test_broken_toornament_team_link_stalk_toornament_team():
+    from backend.stalker import toornament
+    from models.errors import NotFoundResponseError
+
+    broken_url = "https://www.toornament.com/en_US/tournaments/2324026559405285376/participants/2430790231446233696/"
+
+    with pytest.raises(NotFoundResponseError):
+        team = await toornament.stalk_toornament_team(broken_url)
+
+
+@pytest.mark.asyncio
+async def test_broken_link_stalk_toornament_tournament():
+    from backend.stalker import toornament
+    from aiohttp import ClientConnectorError
+
+    unreachable_url = "https://www.com/"
+
+    with pytest.raises(ClientConnectorError):
+        team_list = await toornament.stalk_toornament_tournament(unreachable_url)
+
+
+@pytest.mark.asyncio
+async def test_broken_link_stalk_toornament_team():
+    from backend.stalker import toornament
+    from aiohttp import ClientConnectorError
+
+    unreachable_url = "https://www.com/"
+
+    with pytest.raises(ClientConnectorError):
+        team_list = await toornament.stalk_toornament_team(unreachable_url)

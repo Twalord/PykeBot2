@@ -7,8 +7,13 @@ import logging
 import aiohttp
 import bs4
 from models.data_models import TeamList, Team, Player
+from models.errors import NotFoundResponseError, ServerErrorResponseError
 
 logger = logging.getLogger("pb_logger")
+
+
+# TODO detect case: summoner names are private
+# TODO add URL checker
 
 
 async def stalk_toornament_tournament(toornament_link: str):
@@ -28,6 +33,12 @@ async def stalk_toornament_tournament(toornament_link: str):
 
     async with aiohttp.ClientSession() as session:
         async with session.get(edited_toornament_link) as response:
+            if response.status >= 500:
+                raise ServerErrorResponseError
+
+            # check if toornament page was valid
+            if response.status == 404:
+                raise NotFoundResponseError
             page = await response.text()
 
         toornament_soup = bs4.BeautifulSoup(page, features="html.parser")
@@ -67,15 +78,23 @@ async def stalk_toornament_tournament(toornament_link: str):
 async def stalk_toornament_team(toornament_team_link: str, session: aiohttp.ClientSession = None):
     if session is None:
         async with aiohttp.ClientSession() as session:
-            return stalk_toornament_team(toornament_team_link, session)
+            return await stalk_toornament_team(toornament_team_link, session)
     else:
         edited_url = toornament_team_link + "info"
         async with session.get(edited_url) as response:
+            if response.status >= 500:
+                raise ServerErrorResponseError
+            # check if toornament page was valid
+            if response.status == 404:
+                raise NotFoundResponseError
             page = await response.text()
 
         toornament_soup = bs4.BeautifulSoup(page, features="html.parser")
-        team_name = toornament_soup.select("#main-container > div.layout-section.header > div > div.layout-block.header > "
-                                           "div > div.title > div > span")[0].text
+
+        # extract team name
+        team_name = \
+            toornament_soup.select("#main-container > div.layout-section.header > div > div.layout-block.header > "
+                                   "div > div.title > div > span")[0].text
         name_containers = toornament_soup.find_all('div', class_="text secondary small summoner_player_id")
 
         players = []
