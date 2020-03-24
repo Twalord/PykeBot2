@@ -19,8 +19,10 @@ logger = logging.getLogger("pb_logger")
 async def stalk_toornament_tournament(toornament_link: str):
     """
     Stalks all teams signed up for the given toornament and returns a TeamList Object
-    :param toornament_link: String, url to a tournament on toornament
+    :param toornament_link: url to a tournament on toornament
+    :type toornament_link: str
     :return: TeamList, containing the Team obj for each signed up team
+    :rtype: TeamList
     """
 
     # edit the link
@@ -34,11 +36,14 @@ async def stalk_toornament_tournament(toornament_link: str):
     async with aiohttp.ClientSession() as session:
         async with session.get(edited_toornament_link) as response:
             if response.status >= 500:
+                logger.error(f"Stalking {edited_toornament_link} resulted in a server error.")
                 raise ServerErrorResponseError
 
             # check if toornament page was valid
             if response.status == 404:
+                logger.error(f"No tournament could be found for {edited_toornament_link}.")
                 raise NotFoundResponseError
+
             page = await response.text()
 
         toornament_soup = bs4.BeautifulSoup(page, features="html.parser")
@@ -76,6 +81,16 @@ async def stalk_toornament_tournament(toornament_link: str):
 
 
 async def stalk_toornament_team(toornament_team_link: str, session: aiohttp.ClientSession = None):
+    """
+    Stalks all players in the given team and returns a Team Object
+    :param toornament_team_link: Link to a toornament team page
+    :type toornament_team_link: str
+    :param session: A session that can be reused, if none is given, a new one will be created
+    :type session: aiohttp.ClientSession
+    :return: team containing all players of the given team
+    :rtype: Team
+    """
+
     if session is None:
         async with aiohttp.ClientSession() as session:
             return await stalk_toornament_team(toornament_team_link, session)
@@ -83,10 +98,14 @@ async def stalk_toornament_team(toornament_team_link: str, session: aiohttp.Clie
         edited_url = toornament_team_link + "info"
         async with session.get(edited_url) as response:
             if response.status >= 500:
+                logger.error(f"Stalking {edited_url} resulted in a server error.")
                 raise ServerErrorResponseError
+
             # check if toornament page was valid
             if response.status == 404:
+                logger.error(f"No team could be found for {edited_url}.")
                 raise NotFoundResponseError
+
             page = await response.text()
 
         toornament_soup = bs4.BeautifulSoup(page, features="html.parser")
