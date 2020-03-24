@@ -4,6 +4,9 @@
 
 
 import asyncio
+import logging
+
+logger = logging.getLogger("pb_logger")
 
 
 async def loop_back_dummy(forward_queue: asyncio.Queue, frontend_master_queue: asyncio.Queue):
