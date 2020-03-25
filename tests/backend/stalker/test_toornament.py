@@ -34,7 +34,7 @@ async def test_positive_stalk_toornament_team():
 
     team = await toornament.stalk_toornament_team(url)
 
-    assert len(team.player_list) > 0
+    assert len(team.players) > 0
     assert isinstance(team, Team)
 
     extended_result_str = team.extended_str()

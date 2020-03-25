@@ -48,14 +48,14 @@ class Team:
     Saves information for a team of league players
     """
     name: str
-    player_list: List[Player]
+    players: List[Player]
     multi_link: str
     average_rank: Rank = None
     max_rank: Rank = None
 
     def __init__(self, name, players):
         self.name = name
-        self.player_list = players
+        self.players = players
         self.multi_link = self.build_op_gg_multi_link()
 
     def build_op_gg_multi_link(self):
@@ -65,7 +65,7 @@ class Team:
         """
         base_url = f"https://euw.op.gg/multi/query="
         multi_link = base_url
-        for player in self.player_list:
+        for player in self.players:
             multi_link += player.summoner_name.replace(" ", "")
             multi_link += "%2C"
         return multi_link
@@ -78,7 +78,7 @@ class Team:
 
     def extended_str(self):
         out = str(self) + "\n"
-        sorted_teams = sorted(self.player_list,
+        sorted_teams = sorted(self.players,
                               key=lambda player: player.summoner_name)
         for player in sorted_teams:
             out += str(player) + " | "
@@ -126,4 +126,10 @@ class TeamListList:
         out = ""
         for team_list in self.team_lists:
             out += str(team_list)
+        return out
+
+    def extended_str(self):
+        out = ""
+        for team_list in self.team_lists:
+            out += team_list.extended_str()
         return out
