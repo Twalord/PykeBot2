@@ -18,3 +18,5 @@ docs/source/generated/
 
 # doc build
 docs/build/
+
+/geckodriver.exe
