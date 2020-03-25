@@ -96,34 +96,34 @@ async def stalk_toornament_team(toornament_team_link: str, session: aiohttp.Clie
     if session is None:
         async with aiohttp.ClientSession() as session:
             return await stalk_toornament_team(toornament_team_link, session)
-    else:
-        edited_url = toornament_team_link + "info"
-        async with session.get(edited_url) as response:
-            if response.status >= 500:
-                logger.error(f"Stalking {edited_url} resulted in a server error.")
-                raise ServerErrorResponseError
 
-            # check if toornament page was valid
-            if response.status == 404:
-                logger.error(f"No team could be found for {edited_url}.")
-                raise NotFoundResponseError
+    edited_url = toornament_team_link + "info"
+    async with session.get(edited_url) as response:
+        if response.status >= 500:
+            logger.error(f"Stalking {edited_url} resulted in a server error.")
+            raise ServerErrorResponseError
 
-            page = await response.text()
+        # check if toornament page was valid
+        if response.status == 404:
+            logger.error(f"No team could be found for {edited_url}.")
+            raise NotFoundResponseError
 
-        toornament_soup = bs4.BeautifulSoup(page, features="html.parser")
+        page = await response.text()
 
-        # extract team name
-        team_name = \
-            toornament_soup.select("#main-container > div.layout-section.header > div > div.layout-block.header > "
-                                   "div > div.title > div > span")[0].text
-        name_containers = toornament_soup.find_all('div', class_="text secondary small summoner_player_id")
+    toornament_soup = bs4.BeautifulSoup(page, features="html.parser")
 
-        players = []
-        for container in name_containers:
-            dirty_string = container.text
-            dirt, name = dirty_string.split(":")
-            name = name.replace("\n", "")
-            name = name.strip()
-            players.append(Player(name))
+    # extract team name
+    team_name = \
+        toornament_soup.select("#main-container > div.layout-section.header > div > div.layout-block.header > "
+                               "div > div.title > div > span")[0].text
+    name_containers = toornament_soup.find_all('div', class_="text secondary small summoner_player_id")
 
-        return Team(team_name, players)
+    players = []
+    for container in name_containers:
+        dirty_string = container.text
+        dirt, name = dirty_string.split(":")
+        name = name.replace("\n", "")
+        name = name.strip()
+        players.append(Player(name))
+
+    return Team(team_name, players)
