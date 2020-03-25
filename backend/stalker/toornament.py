@@ -3,6 +3,7 @@ Handles scraping of the toornament page.
 :author: Jonathan Decker
 """
 
+import asyncio
 import logging
 import aiohttp
 import bs4
@@ -19,6 +20,7 @@ logger = logging.getLogger("pb_logger")
 async def stalk_toornament_tournament(toornament_link: str):
     """
     Stalks all teams signed up for the given toornament and returns a TeamList Object
+    :raises ServerErrorResponseError, NotFoundResponseError
     :param toornament_link: url to a tournament on toornament
     :type toornament_link: str
     :return: TeamList, containing the Team obj for each signed up team
@@ -73,9 +75,8 @@ async def stalk_toornament_tournament(toornament_link: str):
             a = team.find('a', href=True)
             participants_links.append(base_url + a['href'])
 
-        team_list = []
-        for link in participants_links:
-            team_list.append(await stalk_toornament_team(link, session))
+        # The following syntax exploits async calls to a list of coroutines
+        team_list = await asyncio.gather(*(stalk_toornament_team(link, session) for link in participants_links))
 
         return TeamList(tournament_name, team_list)
 
@@ -83,6 +84,7 @@ async def stalk_toornament_tournament(toornament_link: str):
 async def stalk_toornament_team(toornament_team_link: str, session: aiohttp.ClientSession = None):
     """
     Stalks all players in the given team and returns a Team Object
+    :raises ServerErrorResponseError, NotFoundResponseError
     :param toornament_team_link: Link to a toornament team page
     :type toornament_team_link: str
     :param session: A session that can be reused, if none is given, a new one will be created
