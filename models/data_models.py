@@ -52,7 +52,7 @@ class Player(Payload):
         self.opgg = base_url + self.summoner_name.replace(" ", "")
 
     def __str__(self):
-        if Rank.rank_int == -1:
+        if self.rank.rank_int == -1:
             return self.summoner_name
         else:
             return f"{self.summoner_name} {str(self.rank)}"
