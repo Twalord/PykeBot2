@@ -1,8 +1,14 @@
 from dataclasses import dataclass
 from typing import List
 import logging
+from models.lookup_tables import rank_str_to_int_lookup, rank_int_to_str_lookup
 
 logger = logging.getLogger('pb_logger')
+
+
+@dataclass
+class Payload:
+    pass
 
 
 @dataclass
@@ -10,25 +16,34 @@ class Rank:
     """
     Saves a player rank as string and integer
     """
-    string = ""
-    rating = -1
+    rank_string = "Unknown"
+    rank_int = -1
 
-    def __init__(self, rank_string, rating):
-        self.string = rank_string
-        self.rating = rating
+    def __init__(self, rank_string: str = None, rank_int: int = None):
+        if rank_string is not None:
+            self.rank_string = rank_string
+            self.rank_int = rank_str_to_int_lookup.get(rank_string, -1)
+
+        elif rank_int is not None:
+            self.rank_int = rank_int
+            self.rank_string = rank_int_to_str_lookup.get(rank_int, "Unknown")
 
     def __str__(self):
-        return self.string
+        return self.rank_string
+
+    def __radd__(self, other):
+        # For summing up ranks during average rank calculation
+        return other + self.rank_int
 
 
 @dataclass
-class Player:
+class Player(Payload):
     """
     Saves information on a single league account
     """
     opgg: str
     summoner_name: str
-    rank: Rank = Rank("", -1)
+    rank: Rank = Rank()
 
     def __init__(self, sum_name):
         self.summoner_name = sum_name
@@ -36,14 +51,14 @@ class Player:
         self.opgg = base_url + self.summoner_name.replace(" ", "")
 
     def __str__(self):
-        if Rank.rating == -1:
+        if Rank.rank_int == -1:
             return self.summoner_name
         else:
             return f"{self.summoner_name} {str(self.rank)}"
 
 
 @dataclass
-class Team:
+class Team(Payload):
     """
     Saves information for a team of league players
     """
@@ -79,14 +94,14 @@ class Team:
     def extended_str(self):
         out = str(self) + "\n"
         sorted_teams = sorted(self.players,
-                              key=lambda player: player.summoner_name)
+                              key=lambda pl: pl.summoner_name)
         for player in sorted_teams:
             out += str(player) + " | "
         return out[:-3]
 
 
 @dataclass
-class TeamList:
+class TeamList(Payload):
     """
     Saves a list of teams and the name of the list
     """
@@ -101,6 +116,7 @@ class TeamList:
         out = f"{self.name}\n\n"
         for team in self.teams:
             out += str(team) + "\n\n"
+        out += "\n"
         return out
 
     def extended_str(self):
@@ -109,11 +125,12 @@ class TeamList:
         # for team in sorted_teams:
         for team in self.teams:
             out += team.extended_str() + "\n"
+        out += "\n"
         return out
 
 
 @dataclass
-class TeamListList:
+class TeamListList(Payload):
     """
     Saves a list of TeamList objects
     """
@@ -133,3 +150,13 @@ class TeamListList:
         for team_list in self.team_lists:
             out += team_list.extended_str()
         return out
+
+
+@dataclass
+class Message(Payload):
+    content: str
+
+
+@dataclass
+class Error(Payload):
+    content: str

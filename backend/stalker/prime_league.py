@@ -52,7 +52,6 @@ async def stalk_prime_league_season(prime_league_season_link: str, headless=True
             div_button.click()
             click_counter -= 1
 
-
     soup = bs4.BeautifulSoup(driver.page_source, features="html.parser")
     box_container = soup.find_all('section', class_="boxed-section")
     gruppenphase = "Gruppenphase"
@@ -62,8 +61,6 @@ async def stalk_prime_league_season(prime_league_season_link: str, headless=True
         if len(title) > 0:
             if gruppenphase in title[0].text:
                 group_stage_container = box
-
-
 
     # extract all group-links
     group_links = [link["href"] for link in group_stage_container.find_all("a", href=True)]
@@ -206,7 +203,9 @@ async def stalk_prime_league_team(prime_league_team_link: str, session: aiohttp.
         return None
 
     team_container = soup.find('div', class_="content-portrait-head")
-    team_name = team_container.find("a").text
+    # behind the team name is always " « League Teams « Prime League", which needs to be removed
+    # this solution will fail if a team uses « in their name
+    team_name = soup.title.text.split("«")[0].strip()
 
     # extract player names
     player_boxes = player_container.find_all('li')
