@@ -21,8 +21,9 @@ class Rank:
 
     def __init__(self, rank_string: str = None, rank_int: int = None):
         if rank_string is not None:
-            self.rank_string = rank_string
             self.rank_int = rank_str_to_int_lookup.get(rank_string.lower(), -1)
+            # this ensures that the rank is always written the same way
+            self.rank_string = rank_int_to_str_lookup.get(self.rank_int, "Unknown")
 
         elif rank_int is not None:
             self.rank_int = rank_int
