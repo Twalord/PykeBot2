@@ -8,6 +8,7 @@ import os
 async def test_positive_stalk_prime_league_season():
     from backend.stalker import prime_league
     from models.data_models import TeamListList, TeamList, Team, Player
+    from backend.stalker.op_gg_rank_stalker import add_team_list_list_ranks
 
     url = "https://www.primeleague.gg/de/leagues/prm/1457-spring-split-2020"
 
@@ -25,6 +26,36 @@ async def test_positive_stalk_prime_league_season():
 
     extended_result_str = team_list_list.extended_str()
 
+    # In case the formatting changes, the test data needs to be recreated and checked manually
+    with open(os.path.join(sys.path[0], "expected_result_stalk_prime_league_season"), "w", encoding='utf-8') as file:
+        file.write(extended_result_str)
+
     with open(os.path.join(sys.path[0], "expected_result_stalk_prime_league_season"), "r", encoding='utf-8') as file:
         expected_result = file.read()
         assert extended_result_str == expected_result
+
+    # Also test with stalked ranks as well to avoid full stalking primeleague.gg twice
+
+    await add_team_list_list_ranks(team_list_list)
+
+    extended_result_str = team_list_list.extended_str()
+
+    # In case the formatting changes, the test data needs to be recreated and checked manually
+    with open(os.path.join(sys.path[0], "expected_result_stalk_prime_league_season_with_ranks"), "w", encoding='utf-8') as file:
+        file.write(extended_result_str)
+
+    with open(os.path.join(sys.path[0], "expected_result_stalk_prime_league_season_with_ranks"), "r", encoding='utf-8') as file:
+        expected_result = file.read()
+        assert extended_result_str == expected_result
+
+
+@pytest.mark.asyncio
+async def test_positive_stalk_prime_league_team():
+    from backend.stalker import prime_league
+    from models.data_models import Team, Player
+
+    url = "https://www.primeleague.gg/de/leagues/teams/90248-esug-ultimate-five-feeders"
+
+    team = await prime_league.stalk_prime_league_team(url)
+
+    assert team.name == "ESUG Ultimate Five Feeders"
