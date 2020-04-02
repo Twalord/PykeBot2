@@ -72,8 +72,14 @@ async def stalk_prime_league_season(prime_league_season_link: str, headless=True
     # close web session
     gecko_manager.quit_session(driver)
 
-    async with aiohttp.ClientSession() as session:
-        team_lists = await asyncio.gather(*(stalk_prime_league_group(link, session) for link in group_links))
+    # custom connector to limit parallel connection pool, to avoid crashes
+    conn = aiohttp.TCPConnector(limit=20)
+    async with aiohttp.ClientSession(connector=conn) as session:
+        team_lists = []
+        for link in group_links:
+            team_lists.append(await stalk_prime_league_group(link, session))
+        # calling gather here causes instability. Due to too many calls?
+        # team_lists = await asyncio.gather(*(stalk_prime_league_group(link, session) for link in group_links))
 
     return TeamListList(team_lists)
 
