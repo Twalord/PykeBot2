@@ -59,7 +59,6 @@ async def frontend_loop(forward_queue: asyncio.Queue, frontend_queue: asyncio.Qu
             forward_queue.put_nowait(query)
 
         elif query.next_step == "display":
-            pass
             # check query context type, set forward_to and send to forward_queue
             if query.context_type == "discord":
                 query.forward_to = "discord"

@@ -32,10 +32,10 @@ def format_payload(query: Query):
     rank = False
     file = False
 
-    if with_ranks_flag_lookup.intersection(query.flags) >= 1:
+    if len(with_ranks_flag_lookup.intersection(query.flags)) >= 1:
         rank = True
 
-    if as_file_flag_lookup.intersection(query.flags) >= 1:
+    if len(as_file_flag_lookup.intersection(query.flags)) >= 1:
         file = True
 
     # identify target display
