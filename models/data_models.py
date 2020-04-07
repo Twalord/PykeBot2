@@ -236,13 +236,13 @@ class Error(Payload):
     content: str
 
     def __str__(self):
-        out = "Error!"
+        out = "Error!\n"
         out += self.content
         out += "\n"
         return out
 
     def discord_str(self):
-        out = "__**Error!**__"
+        out = "__**Error!**__\n"
         out += self.content
         out += "\n"
         return out
