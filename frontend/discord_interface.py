@@ -1,17 +1,16 @@
 """
 :author: Jonathan Decker
 """
-
-
+import io
 import logging
 import asyncio
 from discord.ext import commands
-from discord import Game
 import datetime
-from discord import Message
+from discord import Message, File, Game
 
 from utils.token_loader import load_token
 from models.query import Query
+from models.lookup_tables import as_file_flag_lookup
 
 logger = logging.getLogger('pb_logger')
 prefix = ".pb"
@@ -35,7 +34,24 @@ class PykeBot(commands.Bot):
         await self.wait_until_ready()
         while not self.is_closed():
             query = await self.output_queue.get()
-            await query.discord_channel.send(query.output_message)
+
+            # check if send as file
+            if len(as_file_flag_lookup.intersection(query.flags)) >= 1:
+
+                # prepare file creation
+                title = query.output_message.split("\n", 1)[0]
+                mem_file = io.StringIO(query.output_message)
+
+                # create discord file and send it
+                out_file = File(mem_file, filename=(title + ".txt"))
+                await query.discord_channel.send(f"Finished stalking {title}.", file=out_file)
+
+            # else chunk message
+            else:
+                out_list = chunk_message(query.output_message)
+                for out in out_list:
+                    await query.discord_channel.send(out)
+
             self.output_queue.task_done()
 
     def __init__(self, *args, **kwargs):
@@ -100,10 +116,10 @@ async def on_message(message: Message):
         if message.content.startswith(f'{prefix} ping'):
             await message.channel.send("Pong")
         else:
-            await initiate_query(message)
+            initiate_query(message)
 
 
-async def initiate_query(message: Message):
+def initiate_query(message: Message):
     """
     :description: Creates query object from the given message and submits it to the forward query.
     :param message: A valid message, usually captured by the on_message event.
@@ -114,3 +130,18 @@ async def initiate_query(message: Message):
     logger.debug(f"Received query: {str(message.content)}")
     query = Query("discord", "frontend", "interpret", raw_command=message.content, discord_channel=message.channel)
     pb.forward_queue.put_nowait(query)
+
+
+def chunk_message(out_raw: str):
+    chunk_size = 2000
+    out_splits = out_raw.split("\n")
+    out_list = []
+    message = ""
+    for split in out_splits:
+        if len(message + split) > chunk_size:
+            out_list.append(message)
+            message = ""
+        message += "\n" + split
+    out_list.append(message)
+
+    return out_list

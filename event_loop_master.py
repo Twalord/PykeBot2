@@ -52,11 +52,12 @@ async def query_forwarder(forward_queue: asyncio.Queue, sub_module_queues: {str:
     """
     while True:
         query = await forward_queue.get()
-        target_queue = sub_module_queues.get(query.forward_to)
-        if target_queue not in forward_to_lookup:
+        forward_to = query.forward_to
+        if forward_to not in forward_to_lookup:
             logger.error(f"Invalid forward_to in query {str(query)}, discarding query.")
             del query
             continue
+        target_queue = sub_module_queues.get(forward_to)
         target_queue.put_nowait(query)
         forward_queue.task_done()
 
