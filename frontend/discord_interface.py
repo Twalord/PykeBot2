@@ -112,5 +112,5 @@ async def initiate_query(message: Message):
     :rtype: None
     """
     logger.debug(f"Received query: {str(message.content)}")
-    query = Query(message.content, "discord", message.channel)
+    query = Query("discord", "frontend", "interpret", raw_command=message.content, discord_channel=message.channel)
     pb.forward_queue.put_nowait(query)
