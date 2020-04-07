@@ -28,7 +28,7 @@ async def stalk_toornament_tournament(toornament_link: str):
     """
 
     # edit the link
-    toornament_link_list = toornament_link.split("/")[:-1]
+    toornament_link_list = toornament_link.split("/")
     toornament_link_list.append("participants")
     edited_toornament_link = "/".join(toornament_link_list)
 
