@@ -6,6 +6,8 @@
 import asyncio
 from logging import getLogger
 from frontend import discord_interface, frontend_master
+from backend import backend_master
+from models.lookup_tables import forward_to_lookup
 
 logger = getLogger('pb_logger')
 
@@ -51,6 +53,10 @@ async def query_forwarder(forward_queue: asyncio.Queue, sub_module_queues: {str:
     while True:
         query = await forward_queue.get()
         target_queue = sub_module_queues.get(query.forward_to)
+        if target_queue not in forward_to_lookup:
+            logger.error(f"Invalid forward_to in query {str(query)}, discarding query.")
+            del query
+            continue
         target_queue.put_nowait(query)
         forward_queue.task_done()
 
@@ -70,17 +76,20 @@ def run_main_loop():
         # create internal Queues
         discord_out_queue = asyncio.Queue()
         frontend_master_queue = asyncio.Queue()
+        backend_master_queue = asyncio.Queue()
 
         # register internal queues
         sub_module_queues = {"discord": discord_out_queue,
-                             "frontend": frontend_master_queue}
+                             "frontend": frontend_master_queue,
+                             "backend": backend_master_queue}
 
         # start query forwarder
         asyncio.ensure_future(query_forwarder(forward_queue, sub_module_queues))
 
         # start sub modules, each sub module requires its input queue and the forward queue
         asyncio.ensure_future(discord_interface.run_discord_bot_loop(forward_queue, discord_out_queue))
-        asyncio.ensure_future(frontend_master.loop_back_dummy(forward_queue, frontend_master_queue))
+        asyncio.ensure_future(frontend_master.frontend_loop(forward_queue, frontend_master_queue))
+        asyncio.ensure_future(backend_master.backend_loop(forward_queue, backend_master_queue))
 
         loop.run_forever()
     except KeyboardInterrupt:
