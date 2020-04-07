@@ -18,7 +18,7 @@ def interpret_command(query: Query):
     raw_commands = query.raw_command.split()
 
     # to drop the .pb at the beginning
-    raw_commands.pop()
+    raw_commands.pop(0)
 
     if len(raw_commands) == 0:
         error_message = f"Command {str(query)} failed, as no command was provided."
