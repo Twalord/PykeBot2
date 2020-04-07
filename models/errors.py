@@ -21,13 +21,6 @@ class ServerErrorResponseError(Exception):
     pass
 
 
-class InvalidForwardToError(Exception):
-    """
-    :description: Raised when the forward_to of a query could not be matched
-    """
-    pass
-
-
 class InvalidNextStepError(Exception):
     """
     :description: Raised when the next_step of a query could not be matched
