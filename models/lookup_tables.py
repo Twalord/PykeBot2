@@ -4,6 +4,45 @@ Contains various lookup tables
 """
 
 """
+lookup tables for commands
+"""
+# commands
+stalk_command_lookup = {"stalk", "scrape"}
+
+# flags
+with_ranks_flag_lookup = {"rank", "ranks", "r"}
+as_file_flag_lookup = {"file", "f"}
+
+# flag pool
+all_flags_lookup = {*with_ranks_flag_lookup, *as_file_flag_lookup}
+
+"""
+lookup tables for query parameters
+"""
+
+next_step_lookup = {"interpret", "stalk", "query_db", "format", "display"}
+
+forward_to_lookup = {"discord", "frontend", "backend"}
+
+"""
+lookup tables for websites and website key words
+"""
+
+toornament_base_url = "toornament.com"
+
+toornament_tournament_key_words = {"tournaments"}
+
+
+prime_league_base_url = "primeleague.gg"
+
+prime_league_season_key_words = {"leagues"}
+
+prime_league_group_key_words = {"group", "leagues"}
+
+prime_league_team_key_words = {"teams", "leagues"}
+
+
+"""
 lookup tables for rank_stalker
 """
 rank_str_to_int_lookup = {"unranked": 0,
