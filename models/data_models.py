@@ -2,13 +2,30 @@ from dataclasses import dataclass
 from typing import List
 import logging
 from models.lookup_tables import rank_str_to_int_lookup, rank_int_to_str_lookup
+from models.errors import PayloadCreationError
 
 logger = logging.getLogger('pb_logger')
 
 
 @dataclass
 class Payload:
-    pass
+
+    def __init__(self):
+        logger.error("Payload creation error, something attempted to directly create a payload object, "
+                     "only subclasses may be created.")
+        raise PayloadCreationError
+
+    def __str__(self):
+        pass
+
+    def extended_str(self):
+        pass
+
+    def discord_str(self):
+        pass
+
+    def discord_extended_str(self):
+        pass
 
 
 @dataclass
@@ -57,6 +74,13 @@ class Player(Payload):
         else:
             return f"{self.summoner_name} {str(self.rank)}"
 
+    def discord_str(self):
+        if self.rank.rank_int == -1:
+            return self.summoner_name
+        else:
+            # adds some * for formatting in discord
+            return f"{self.summoner_name} *{str(self.rank)}*"
+
 
 @dataclass
 class Team(Payload):
@@ -100,6 +124,22 @@ class Team(Payload):
             out += str(player) + " | "
         return out[:-3]
 
+    def discord_str(self):
+        # adds __ for discord formatting
+        if self.average_rank is None:
+            return f"__{self.name}__ | {self.multi_link}"
+        else:
+            return f"__{self.name}__ Ø: {str(self.average_rank)} max: {str(self.max_rank)} | {self.multi_link}"
+
+    def discord_extended_str(self):
+        # needs to call discord_str for each player
+        out = self.discord_str() + "\n"
+        sorted_teams = sorted(self.players,
+                              key=lambda pl: pl.summoner_name)
+        for player in sorted_teams:
+            out += player.discord_str() + " | "
+        return out[:-3]
+
 
 @dataclass
 class TeamList(Payload):
@@ -121,11 +161,24 @@ class TeamList(Payload):
         return out
 
     def extended_str(self):
-        out = f"{self.name} \n"
-        # sorted_teams = sorted(self.teams, key=lambda team: lookup_tables.rank_lookup.get(str(team.average_rank).lower()), reverse=True)
-        # for team in sorted_teams:
-        for team in self.teams:
+        out = f"{self.name} \n\n"
+        sorted_teams = sorted(self.teams, key=lambda t: t.average_rank.rank_int, reverse=True)
+        for team in sorted_teams:
             out += team.extended_str() + "\n"
+        out += "\n"
+        return out
+
+    def discord_str(self):
+        out = f"__**{self.name}**__ \n"
+        for team in self.teams:
+            out += team.discord_str() + "\n"
+        return out
+
+    def discord_extended_str(self):
+        out = f"__**{self.name}**__ \n"
+        sorted_teams = sorted(self.teams, key=lambda t: t.average_rank.rank_int, reverse=True)
+        for team in sorted_teams:
+            out += team.discord_extended_str() + "\n"
         out += "\n"
         return out
 
@@ -152,12 +205,44 @@ class TeamListList(Payload):
             out += team_list.extended_str()
         return out
 
+    def discord_str(self):
+        out = ""
+        for team_list in self.team_lists:
+            out += team_list.discord_str()
+        return out
+
+    def discord_extended_str(self):
+        out = ""
+        for team_list in self.team_lists:
+            out += team_list.discord_extended_str()
+        return out
+
 
 @dataclass
 class Message(Payload):
     content: str
 
+    def __str__(self):
+        out = self.content
+        out += "\n"
+        return out
+
+    def discord_str(self):
+        return str(self)
+
 
 @dataclass
 class Error(Payload):
     content: str
+
+    def __str__(self):
+        out = "Error!"
+        out += self.content
+        out += "\n"
+        return out
+
+    def discord_str(self):
+        out = "__**Error!**__"
+        out += self.content
+        out += "\n"
+        return out
