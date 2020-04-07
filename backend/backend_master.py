@@ -36,30 +36,36 @@ async def backend_loop(forward_queue: asyncio.Queue, backend_queue: asyncio.Queu
 
             # check flags
             ranks = False
-            if with_ranks_flag_lookup.intersection(query.flags) >= 1:
+            if len(with_ranks_flag_lookup.intersection(query.flags)) >= 1:
                 ranks = True
 
             # extra case for prime league season with ranks
             # in this case a message should inform the user that this might take a moment
             if stalker is prime_league.stalk_prime_league_season and ranks:
-                extra_message = Message("Running prime league season stalk with ranks might take a while, be patient.")
+                extra_message = Message("Running prime league season stalk with ranks might take a while, also output "
+                                        "only as file.")
                 extra_query = Query(query.context_type, "frontend", "format", discord_channel=query.discord_channel,
                                     payload=extra_message)
                 forward_queue.put_nowait(extra_query)
+                query.update_query(query.forward_to, query.next_step, flags="file")
 
+            logger.debug(f"Starting stalk for query: {query.raw_command}")
             try:
                 payload = await stalker(query.data)
             # TODO add better error handling based on exception raised
             except Exception as e:
-                error_message = f"While stalking an {type(e)} occurred: {str(e)}"
+                error_message = f"While stalking a {type(e)} occurred. Original query: {query}"
                 logger.error(error_message)
                 create_error(query, error_message)
                 forward_queue.put_nowait(query)
                 backend_queue.task_done()
                 continue
+            logger.debug(f"Finished stalking for query: {query.raw_command}")
 
             if ranks:
+                logger.debug(f"Starting rank stalk for query: {query.raw_command}")
                 await call_rank_stalker(payload)
+                logger.debug(f"Finished rank stalk for query: {query.raw_command}")
 
             # adds data to db
             # TODO don't forget to add data
