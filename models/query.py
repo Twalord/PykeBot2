@@ -69,10 +69,18 @@ class Query:
     def __str__(self):
         """
         :description:
-        :return: Returns the command followed by the context_type fields for now.
+        :return: Returns extensive information on the query for debugging purpose.
         :rtype: str
         """
-        return str(f"{self.raw_command}, {self.context_type}")
+        out = "\n"
+        out += f"raw_command: {self.raw_command}\n"
+        out += f"context_type: {self.context_type}\n"
+        out += f"payload type: {type(self.payload)}\n"
+        out += f"data: {self.data}\n"
+        out += f"flags: {str(self.flags)}\n"
+        out += f"forward_to: {self.forward_to}\n"
+        out += f"next_step: {self.next_step}\n"
+        return out
 
     def update_query(self, forward_to, next_step, data: str = None, flags: Set[str] = None, output_message: str = None, payload: Payload = None):
         """
