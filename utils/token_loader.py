@@ -1,4 +1,6 @@
 """
+Offers utility for loading API Tokens from a file or environmental variable.
+
 :author: Jonathan Decker
 """
 

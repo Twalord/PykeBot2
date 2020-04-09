@@ -1,4 +1,9 @@
 """
+Offers logging utilities for the entire program.
+Should be imported in every file as
+
+    "logger = logging.getLogger("pb_logger")"
+
 :author: Jonathan Decker
 """
 

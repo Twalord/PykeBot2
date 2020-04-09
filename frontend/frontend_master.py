@@ -1,4 +1,6 @@
 """
+Main Frontend module, responsible for calling command interpreter on new queries,
+calling output formatter and checking the context before sending a query to the respective interface.
 
 :author: Jonathan Decker
 """
@@ -33,6 +35,15 @@ async def loop_back_dummy(forward_queue: asyncio.Queue, frontend_queue: asyncio.
 
 
 async def frontend_loop(forward_queue: asyncio.Queue, frontend_queue: asyncio.Queue):
+    """
+    :description: Main Coroutine for the frontend. Responsible for calling command interpreter and output formatter.
+    :param forward_queue: The Queue which is handled by the forwarder of the main event loop.
+    :type forward_queue: asyncio.Queue
+    :param frontend_queue: The Queue that is handled by this Coroutine.
+    :type frontend_queue: asyncio.Queue
+    :return: None
+    :rtype: None
+    """
 
     while True:
         query = await frontend_queue.get()

@@ -4,7 +4,7 @@ Contains various lookup tables
 """
 
 """
-lookup tables for commands
+lookup tables for commands and flags
 """
 # commands
 stalk_command_lookup = {"stalk", "scrape"}

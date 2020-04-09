@@ -1,4 +1,5 @@
 """
+Responsible for creating the output message from the payload by calling str messages, respecting flags.
 
 :author: Jonathan Decker
 """
@@ -12,6 +13,13 @@ logger = logging.getLogger("pb_logger")
 
 
 def format_payload(query: Query):
+    """
+    :description: Takes the Payload from the Query and calls to str based on context and flags and saves it to output message.
+    :param query: The handled Query.
+    :type query: Query
+    :return: None
+    :rtype: None
+    """
 
     # check for payload
     if not isinstance(query.payload, Payload):
@@ -61,11 +69,28 @@ def format_payload(query: Query):
 
 
 def create_error(query: Query, content: str):
+    """
+    :description: Creates an error message from the content and adds it to the query,
+    further sets query forward to to frontend and next step to format.
+    :param query: The handled query, which encountered an error.
+    :type query: Query
+    :param content: The error message to be displayed, should usually include str(query).
+    :type content: str
+    :return: None
+    :rtype: None
+    """
     error = Error(content)
     query.update_query("frontend", "format", payload=error)
 
 
 def format_error(query: Query):
+    """
+    :description: Formats error payloads, and sets output message.
+    :param query: The handled Query.
+    :type query: Query
+    :return: None
+    :rtype: None
+    """
 
     # rank and file flags are ignored as this is an error message
     if query.context_type == "discord":
@@ -76,7 +101,13 @@ def format_error(query: Query):
 
 
 def format_message(query: Query):
-
+    """
+    :description: Formats message payloads, and sets output message.
+    :param query: The handled Query.
+    :type query: Query
+    :return: None
+    :rtype: None
+    """
     # context is ignored for formatting
     # rank and file flags are also ignored as this is a simple message
     query.output_message = str(query.payload)

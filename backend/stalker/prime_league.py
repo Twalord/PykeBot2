@@ -17,13 +17,14 @@ logger = logging.getLogger("pb_logger")
 
 async def stalk_prime_league_season(prime_league_season_link: str, headless=True):
     """
-
-    :param prime_league_season_link:
-    :type prime_league_season_link:
-    :param headless:
-    :type headless:
-    :return:
-    :rtype:
+    :description: Uses Selenium to open the link and gather all group links from it,
+    further calls stalk prime league group on all groups.
+    :param prime_league_season_link: A valid link to a prime league season.
+    :type prime_league_season_link: str
+    :param headless: Whether the browser should be headless or not. Use head for debugging purposes.
+    :type headless: bool
+    :return: TeamListList object containing all gathered information.
+    :rtype: TeamListList
     """
 
     driver = gecko_manager.open_session(headless)
@@ -86,7 +87,7 @@ async def stalk_prime_league_season(prime_league_season_link: str, headless=True
 
 def filter_group_links(link):
     """
-    Helper function to filter out non group links
+    Helper function to filter out non group links.
     :param link: Str, a web link
     :return: Bool, true if the link contains a keyword and leads to a group, false if not
     """
@@ -100,7 +101,7 @@ def filter_group_links(link):
 
 def filter_team_links(link):
     """
-    Helper function to filter out non team links
+    Helper function to filter out non team links.
     :param link: Str, a web link
     :return: Bool, true if the link contains a teams, false if not
     """
@@ -114,15 +115,16 @@ def filter_team_links(link):
 async def stalk_prime_league_group(prime_league_group_link: str, session: aiohttp.ClientSession = None,
                                    headless: bool = True):
     """
-
-    :param prime_league_group_link:
-    :type prime_league_group_link:
-    :param session:
-    :type session:
-    :param headless:
-    :type headless:
-    :return:
-    :rtype:
+    :description: Uses aiohttp requests to stalk a prime league group.
+    Also contains an extra case for the swiss starter group.
+    :param prime_league_group_link: A valid link to a prime league group.
+    :type prime_league_group_link: str
+    :param session: When a session already exits, it should be reused as much as possible for better performance.
+    :type session: aiohttp.ClientSession
+    :param headless: The swiss starter group regroup requires the selenium webriver. Use for debugging.
+    :type headless: bool
+    :return: TeamList object containing all gathered information.
+    :rtype: TeamList
     """
 
     if session is None:
@@ -183,13 +185,13 @@ async def stalk_prime_league_group(prime_league_group_link: str, session: aiohtt
 
 async def stalk_prime_league_team(prime_league_team_link: str, session: aiohttp.ClientSession = None):
     """
-
+    :description: Uses aiohttp requests to stalk a prime league team.
     :param prime_league_team_link:
     :type prime_league_team_link:
-    :param session:
-    :type session:
-    :return:
-    :rtype:
+    :param session: When a session already exits, it should be reused as much as possible for better performance.
+    :type session: aiohttp.ClientSession
+    :return: Team object containing all the gathered information.
+    :rtype: Team
     """
 
     if session is None:

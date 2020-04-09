@@ -1,4 +1,8 @@
 """
+Query is the main object used for carrying information between different submodules.
+Normally a command from the user interface is represented by a single Query,
+but in some cases additional Queries carrying Messages might be created.
+
 :author: Jonathan Decker
 """
 
@@ -18,7 +22,7 @@ class Query:
     """
     :description: Class for any type of data that is sent around via Queues.
     Should mainly be created by ingoing interfaces.
-    While processing the query the fields should be further filled out and updated.
+    While processing the query the fields should be further filled out and updated using update query function.
     """
     raw_command: str
     context_type: str
@@ -35,19 +39,28 @@ class Query:
                  flags: Set[str] = None, payload: Payload = None):
         """
         :description: For new Query Objects its assumed they originate from some interface
-         and should be forwarded to the frontend.
-        :param raw_command: The actual command issued by the user.
-        :type raw_command: str
+        and should be forwarded to the frontend.
         :param context_type: The type of context the command was issued or should go back to e.g. discord, cli
         :type context_type: str
+        :param forward_to: The next sub module that needs to handle the query. Used by the query forwarder.
+        :type forward_to: str
+        :param next_step: The next step in processing the command read by the submodule receiving the query.
+        :type next_step: str
+        :param raw_command: The actual command issued by the user.
+        :type raw_command: str
         :param discord_channel: In case the command comes from a discord chat interface,
          the channel needs to be saved in order to answer in the same channel.
         :type discord_channel: Message.channel
-        :param forward_to: The next sub module that needs to handle the query. Used by the query forwarder.
-        :type forward_to: str
-        :param output_message: The message that should be sent back to the user via the channel.
+        :param data: Input data from the command, usually urls for stalking.
+        :type data: str
+        :param output_message: The message that should be sent back to the original context in its formatted form.
         :type output_message: str
+        :param flags: A set of strings which sets additional options like output as file or stalk ranks.
+        :type flags: Set[str]
+        :param payload: Data model that carries the data produced by the backend, a message or an error message.
+        :type payload: Payload
         """
+
         if forward_to not in forward_to_lookup:
             logger.error(f"Failed to create query as forward_to could not be matched: {forward_to}")
             raise InvalidForwardToError
@@ -82,23 +95,24 @@ class Query:
         out += f"next_step: {self.next_step}\n"
         return out
 
-    def update_query(self, forward_to, next_step, data: str = None, flags: Set[str] = None, output_message: str = None, payload: Payload = None):
+    def update_query(self, forward_to: str, next_step: str, data: str = None, flags: Set[str] = None, output_message: str = None, payload: Payload = None):
         """
-
-        :param forward_to:
-        :type forward_to:
-        :param next_step:
-        :type next_step:
-        :param data:
-        :type data:
-        :param flags:
-        :type flags:
+        :description: Updates query information, should be used instead of directly modifying attributes as some checks are
+        in place to validate the new values.
+        :param forward_to: The next sub module that needs to handle the query. Used by the query forwarder.
+        :type forward_to: str
+        :param next_step: The next step in processing the command read by the submodule receiving the query.
+        :type next_step: str
+        :param data: Input data from the command, usually urls for stalking.
+        :type data: str
+        :param flags: A set of strings which sets additional options like output as file or stalk ranks.
+        :type flags: Set[str]
         :param output_message:
         :type output_message:
-        :param payload:
-        :type payload:
-        :return:
-        :rtype:
+        :param payload: Data model that carries the data produced by the backend, a message or an error message.
+        :type payload: Payload
+        :return: None
+        :rtype: None
         """
         if forward_to not in forward_to_lookup:
             logger.error(f"Failed to create query as forward_to could not be matched: {forward_to}")

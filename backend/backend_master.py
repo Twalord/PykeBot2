@@ -1,4 +1,6 @@
 """
+Main Backend Module, responsible for calling stalker functions for query data or calling the database interface.
+When finished sets the payload field of the query with data object.
 
 :author: Jonathan Decker
 """
@@ -13,6 +15,9 @@ from models.lookup_tables import prime_league_base_url, prime_league_group_key_w
 
 logger = logging.getLogger('pb_logger')
 
+"""
+Helper dictionaries used to map identifier in the url to stalker functions.
+"""
 website_type_to_prime_league_stalker = {"group": prime_league.stalk_prime_league_group,
                                         "team": prime_league.stalk_prime_league_team,
                                         "season": prime_league.stalk_prime_league_season}
@@ -21,6 +26,15 @@ website_type_to_toornament_stalker = {"tournament": toornament.stalk_toornament_
 
 
 async def backend_loop(forward_queue: asyncio.Queue, backend_queue: asyncio.Queue):
+    """
+    :description: Main Coroutine for the backend. Responsible for calling stalker functions.
+    :param forward_queue: The Queue which is handled by the forwarder of the main event loop.
+    :type forward_queue: asyncio.Queue
+    :param backend_queue: The Queue that is handled by this Coroutine.
+    :type backend_queue: asyncio.Queue
+    :return: None
+    :rtype: None
+    """
     while True:
         query = await backend_queue.get()
 
@@ -84,11 +98,28 @@ async def backend_loop(forward_queue: asyncio.Queue, backend_queue: asyncio.Queu
 
 
 def create_error(query: Query, content: str):
+    """
+    :description: Creates an error message from the content and adds it to the query,
+    further sets query forward to to frontend and next step to format.
+    :param query: The handled query, which encountered an error.
+    :type query: Query
+    :param content: The error message to be displayed, should usually include str(query).
+    :type content: str
+    :return: None
+    :rtype: None
+    """
     error = Error(content)
     query.update_query("frontend", "format", payload=error)
 
 
 def determine_stalker(query: Query):
+    """
+    :description: Checks the url for keywords to determine the correct stalker.
+    :param query: The handled Query.
+    :type query: Query
+    :return: The stalker function fitting the url.
+    :rtype: function (coroutine)
+    """
     prime_league_str = "prime_league"
     toornament_str = "toornament"
     url = query.data
@@ -140,6 +171,13 @@ def determine_stalker(query: Query):
 
 
 async def call_rank_stalker(payload: Payload):
+    """
+    :description: Checks the payload type and calls the correct rank stalker.
+    :param payload: The Payload object returned from stalking. Submitting Error, Message or Player will cause an error.
+    :type payload: Payload
+    :return: None
+    :rtype: None
+    """
     # determine what the payload is to call the respective op gg rank function
 
     if isinstance(payload, TeamListList):

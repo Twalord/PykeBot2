@@ -1,4 +1,5 @@
 """
+Responsible for understanding the raw command in a given Query and setting next step, flags and data accordingly.
 
 :author: Jonathan Decker
 """
@@ -11,6 +12,13 @@ logger = logging.getLogger("pb_logger")
 
 
 def interpret_command(query: Query):
+    """
+    :description: Interprets the raw command of the Query and sets next step, flags and data accordingly.
+    :param query: The handled Query.
+    :type query: Query
+    :return: None
+    :rtype: None
+    """
 
     flags = set()
     url = ""
@@ -66,5 +74,15 @@ def interpret_command(query: Query):
 
 
 def create_error(query: Query, content: str):
+    """
+    :description: Creates an error message from the content and adds it to the query,
+    further sets query forward to to frontend and next step to format.
+    :param query: The handled query, which encountered an error.
+    :type query: Query
+    :param content: The error message to be displayed, should usually include str(query).
+    :type content: str
+    :return: None
+    :rtype: None
+    """
     error = Error(content)
     query.update_query("frontend", "format", payload=error)

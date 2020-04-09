@@ -1,12 +1,24 @@
+"""
+Offers utility to open a firefox webdriver.
+Geckodriver should be in PATH for this.
+
+:author: Jonathan Decker
+"""
+
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.common.service import WebDriverException
+from selenium.webdriver.firefox.webdriver import WebDriver
 
 
-def open_session(headless=True):
+def open_session(headless=True) -> WebDriver:
     """
-    Open a selenium web session in Firefox
-    :return: webdriver, with an open session
+    :description: Opens a Selenium Firefox web session.
+    Attempts to find geckodriver from PATH, if it fails uses a static path.
+    :param headless: Set whether the web session should be headless or not.
+    :type headless: bool
+    :return: A new firefox webdriver.
+    :rtype: selenium.webdriver
     """
     options = Options()
     options.add_argument("--headless")

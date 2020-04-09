@@ -1,3 +1,16 @@
+"""
+Provides data models for Player, Team, Team list and Team list list objects.
+Further also Error and Message objects are also defined.
+All of them are subclasses of Payload which is used in Query.
+Finally also Rank is defined.
+
+All payload subclasses define to str and to discord str functions which are used by the output formatter
+Player, Team, Team list and Team list list also define extended to str functions
+which display further information on the Players and the Rank if possible.
+
+:author: Jonathan Decker
+"""
+
 from dataclasses import dataclass
 from typing import List
 import logging

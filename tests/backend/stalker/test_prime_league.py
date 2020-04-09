@@ -1,3 +1,9 @@
+"""
+Test Prime League stalker and op gg stalker functions.
+
+:author: Jonathan Decker
+"""
+
 import sys
 
 import pytest
