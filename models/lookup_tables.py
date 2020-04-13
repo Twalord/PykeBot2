@@ -42,6 +42,12 @@ prime_league_group_key_words = {"group", "leagues"}
 prime_league_team_key_words = {"teams", "leagues"}
 
 
+summoners_inn_base_url = "summoners-inn.de"
+
+summoners_inn_cup_key_words = {"leagues"}
+
+summoners_inn_team_key_words = {"teams", "leagues"}
+
 """
 lookup tables for rank_stalker
 """

@@ -9,9 +9,10 @@ import logging
 import asyncio
 from models.data_models import Error, Message, Payload, Team, TeamListList, TeamList
 from models.query import Query
-from backend.stalker import op_gg_rank, prime_league, toornament
+from backend.stalker import op_gg_rank, prime_league, toornament, summoners_inn
 from models.lookup_tables import prime_league_base_url, prime_league_group_key_words, prime_league_season_key_words, \
-    prime_league_team_key_words, toornament_base_url, toornament_tournament_key_words, with_ranks_flag_lookup
+    prime_league_team_key_words, toornament_base_url, toornament_tournament_key_words, with_ranks_flag_lookup, \
+    summoners_inn_base_url, summoners_inn_cup_key_words, summoners_inn_team_key_words
 
 logger = logging.getLogger('pb_logger')
 
@@ -23,6 +24,9 @@ website_type_to_prime_league_stalker = {"group": prime_league.stalk_prime_league
                                         "season": prime_league.stalk_prime_league_season}
 
 website_type_to_toornament_stalker = {"tournament": toornament.stalk_toornament_tournament}
+
+website_type_to_summoners_inn_stalker = {"cup": summoners_inn.stalk_summoners_inn_cup,
+                                         "team": prime_league.stalk_prime_league_team}
 
 
 async def backend_loop(forward_queue: asyncio.Queue, backend_queue: asyncio.Queue):
@@ -122,6 +126,7 @@ def determine_stalker(query: Query):
     """
     prime_league_str = "prime_league"
     toornament_str = "toornament"
+    summoners_inn_str = "summoners_inn"
     url = query.data
     website = None
     website_type = None
@@ -130,6 +135,8 @@ def determine_stalker(query: Query):
         website = prime_league_str
     elif toornament_base_url in url:
         website = toornament_str
+    elif summoners_inn_base_url in url:
+        website = summoners_inn_str
     else:
         error_message = f"Invalid url for query {str(query)}, url {url} could not be matched with a stalker."
         logger.error(error_message)
@@ -168,6 +175,20 @@ def determine_stalker(query: Query):
             return None
 
         return website_type_to_toornament_stalker.get(website_type)
+
+    if website == summoners_inn_str:
+        if all(elem in url.split("/") for elem in summoners_inn_team_key_words):
+            website_type = "team"
+        elif all(elem in url.split("/") for elem in summoners_inn_cup_key_words):
+            website_type = "cup"
+        else:
+            error_message = f"Invalid url for query {str(query)}, url {url} was matched with summoners-inn but no " \
+                            f"tournament was found. "
+            logger.error(error_message)
+            create_error(query, error_message)
+            return None
+
+        return website_type_to_summoners_inn_stalker.get(website_type)
 
 
 async def call_rank_stalker(payload: Payload):
