@@ -103,8 +103,8 @@ class Team(Payload):
     name: str
     players: List[Player]
     multi_link: str
-    average_rank: Rank = Rank()
-    max_rank: Rank = Rank()
+    average_rank: Rank = None
+    max_rank: Rank = None
 
     def __init__(self, name, players):
         self.name = name
@@ -131,9 +131,9 @@ class Team(Payload):
 
     def extended_str(self):
         out = str(self) + "\n"
-        sorted_teams = sorted(self.players,
-                              key=lambda pl: pl.summoner_name)
-        for player in sorted_teams:
+        sorted_players = sorted(self.players,
+                                key=lambda pl: pl.summoner_name)
+        for player in sorted_players:
             out += str(player) + " | "
         return out[:-3]
 
@@ -147,9 +147,9 @@ class Team(Payload):
     def discord_extended_str(self):
         # needs to call discord_str for each player
         out = self.discord_str() + "\n"
-        sorted_teams = sorted(self.players,
-                              key=lambda pl: pl.summoner_name)
-        for player in sorted_teams:
+        sorted_players = sorted(self.players,
+                                key=lambda pl: pl.summoner_name)
+        for player in sorted_players:
             out += player.discord_str() + " | "
         return out[:-3]
 
@@ -175,8 +175,12 @@ class TeamList(Payload):
 
     def extended_str(self):
         out = f"{self.name} \n\n"
-        sorted_teams = sorted(self.teams, key=lambda t: t.average_rank.rank_int, reverse=True)
+        ranked_teams = [team for team in self.teams if team.average_rank is not None]
+        unranked_teams = [team for team in self.teams if team.average_rank is None]
+        sorted_teams = sorted(ranked_teams, key=lambda t: t.average_rank.rank_int, reverse=True)
         for team in sorted_teams:
+            out += team.extended_str() + "\n"
+        for team in unranked_teams:
             out += team.extended_str() + "\n"
         out += "\n"
         return out
@@ -189,9 +193,13 @@ class TeamList(Payload):
 
     def discord_extended_str(self):
         out = f"__**{self.name}**__ \n"
-        sorted_teams = sorted(self.teams, key=lambda t: t.average_rank.rank_int, reverse=True)
+        ranked_teams = [team for team in self.teams if team.average_rank is not None]
+        unranked_teams = [team for team in self.teams if team.average_rank is None]
+        sorted_teams = sorted(ranked_teams, key=lambda t: t.average_rank.rank_int, reverse=True)
         for team in sorted_teams:
             out += team.discord_extended_str() + "\n"
+        for team in unranked_teams:
+            out += team.discord_str() + "\n"
         out += "\n"
         return out
 
