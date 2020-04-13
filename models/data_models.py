@@ -103,8 +103,8 @@ class Team(Payload):
     name: str
     players: List[Player]
     multi_link: str
-    average_rank: Rank = None
-    max_rank: Rank = None
+    average_rank: Rank = Rank()
+    max_rank: Rank = Rank()
 
     def __init__(self, name, players):
         self.name = name
