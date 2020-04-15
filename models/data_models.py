@@ -127,31 +127,31 @@ class Team(Payload):
         if self.average_rank is None:
             return f"{self.name} | {self.multi_link}"
         else:
-            return f"{self.name} Ø: {str(self.average_rank)} max: {str(self.max_rank)} | {self.multi_link}"
+            return f"{self.name} Ø: {str(self.average_rank)} max: {str(self.max_rank)} | {self.multi_link}\n"
 
     def extended_str(self):
-        out = str(self) + "\n"
+        out = str(self)
         sorted_players = sorted(self.players,
                                 key=lambda pl: pl.summoner_name)
         for player in sorted_players:
             out += str(player) + " | "
-        return out[:-3]
+        return out[:-3] + "\n"
 
     def discord_str(self):
         # adds __ for discord formatting
         if self.average_rank is None:
             return f"__{self.name}__ | {self.multi_link}"
         else:
-            return f"__{self.name}__ Ø: {str(self.average_rank)} max: {str(self.max_rank)} | {self.multi_link}"
+            return f"__{self.name}__ Ø: {str(self.average_rank)} max: {str(self.max_rank)} | {self.multi_link}\n"
 
     def discord_extended_str(self):
         # needs to call discord_str for each player
-        out = self.discord_str() + "\n"
+        out = self.discord_str()
         sorted_players = sorted(self.players,
                                 key=lambda pl: pl.summoner_name)
         for player in sorted_players:
             out += player.discord_str() + " | "
-        return out[:-3]
+        return out[:-3] + "\n"
 
 
 @dataclass

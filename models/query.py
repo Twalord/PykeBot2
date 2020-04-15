@@ -69,6 +69,9 @@ class Query:
             logger.error(f"Failed to create query as next_step could not be matched: {next_step}")
             raise InvalidNextStepError
 
+        if flags is None:
+            flags = set()
+
         self.raw_command = raw_command
         self.context_type = context_type
         self.discord_channel = discord_channel
@@ -125,11 +128,10 @@ class Query:
         self.forward_to = forward_to
         self.next_step = next_step
         self.data = data
+
         if flags is not None:
-            if self.flags is not None:
-                self.flags.union(flags)
-            else:
-                self.flags = flags
+            self.flags.union(flags)
+
         if output_message is not None:
             self.output_message = output_message
         if payload is not None:
