@@ -130,7 +130,7 @@ class Query:
         self.data = data
 
         if flags is not None:
-            self.flags.union(flags)
+            self.flags.update(flags)
 
         if output_message is not None:
             self.output_message = output_message
