@@ -1,4 +1,6 @@
 """
+Main file used to start PykeBot2.
+
 :author: Jonathan Decker
 """
 

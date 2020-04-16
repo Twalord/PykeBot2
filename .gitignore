@@ -3,6 +3,7 @@
 
 # library
 venv/
+venv_min/
 
 # logs
 *.log
