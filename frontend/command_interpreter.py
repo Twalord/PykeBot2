@@ -5,8 +5,8 @@ Responsible for understanding the raw command in a given Query and setting next 
 """
 from models.query import Query
 import logging
-from models.lookup_tables import stalk_command_lookup, all_flags_lookup
-from models.data_models import Error
+from models.lookup_tables import stalk_command_lookup, all_flags_lookup, help_commands_lookup, help_message
+from models.data_models import Error, Message
 
 logger = logging.getLogger("pb_logger")
 
@@ -29,7 +29,8 @@ def interpret_command(query: Query):
     raw_commands.pop(0)
 
     if len(raw_commands) == 0:
-        error_message = f"Command {str(query)} failed, as no command was provided."
+        error_message = f"Command {str(query)} failed, as no command was provided." \
+                        f"\nSee '.pb help' for usage."
         logger.error(error_message)
         create_error(query, error_message)
         return
@@ -41,7 +42,8 @@ def interpret_command(query: Query):
         # extract data (e.g. url)
         # error case as stalk command needs data
         if len(raw_commands) == 1:
-            error_message = f"Command {str(query)} failed, as no data for stalking was provided."
+            error_message = f"Command {str(query)} failed, as no data for stalking was provided.\n" \
+                            f"See '.pb help' for usage."
             logger.error(error_message)
             create_error(query, error_message)
             return
@@ -55,7 +57,8 @@ def interpret_command(query: Query):
             # check for invalid flags
             for flag in flags:
                 if flag not in all_flags_lookup:
-                    error_message = f"Command {str(query)} failed, as an unknown flag {flag} was provided."
+                    error_message = f"Command {str(query)} failed, as an unknown flag '{flag}' was provided.\n" \
+                                    f"See '.pb help' for usage."
                     logger.error(error_message)
                     create_error(query, error_message)
                     return
@@ -66,8 +69,15 @@ def interpret_command(query: Query):
         # update query so it can be forwarded to backend
         query.update_query("backend", "stalk", data=url, flags=flags)
         return
+
+    elif base_command in help_commands_lookup:
+        help_m = Message(help_message)
+        query.update_query("frontend", "format", payload=help_m)
+        return
+
     else:
-        error_message = f"Only basic stalking has been implemented so far, command {str(query)} failed."
+        error_message = f"Only basic stalking has been implemented so far, command {str(query)} failed.\n" \
+                        f"See '.pb help' for usage."
         logger.error(error_message)
         create_error(query, error_message)
         return
