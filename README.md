@@ -51,7 +51,7 @@ PykeBot2 uses Python asyncio to handle user commands asynchronously.
 This keeps the Discord interface responsive while stalks are performed concurrently.
 Incoming commands are handled as query objects which are forwarded between the different parts of the bot.
 
-The stalker which perform the actual gathering of the player information, use html requests via aiohttp whenever possible
+The stalkers, which perform the actual gathering of the player information, use html requests via aiohttp whenever possible
 and selenium when necessary. Starting a headless firefox instance is a a lot more expensive in terms of performance
 compared to simply making a few html requests. 
 As is the way with web scraper like this, the stalker might easily break if a tournament platform changes their website.
