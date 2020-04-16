@@ -9,7 +9,7 @@ import sys
 import pytest
 import os
 
-recreate_test_data = False
+recreate_test_data = True
 
 
 @pytest.mark.asyncio
