@@ -16,10 +16,10 @@ Supported tournament platforms are:
 The first version of [PykeBot](https://github.com/Twalord/PykeBot) arose an annoyance.
 When playing on one of the tournament platforms we would like to have a op.gg multi-link of our opponents to prepare our draft.
 So someone has to copy and paste every single player summoner name from the tournament page into the op.gg form.
-The first PykeBot was created to automate this process and did so quite well but wasn't designed to be easily expended or easy to use by anyone buts its creator.
+The first PykeBot was created to automate this process and did so quite well but wasn't designed to be easily expended or easy to use by anyone but its creator.
 
-PykeBot2 was completely redesigned, is faster and more reliable than the original PykeBot,
-it is also probably kinda over-engineered given its simple task.
+PykeBot2 was completely redesigned and it is faster and more reliable than the original PykeBot.
+It is also probably kinda over-engineered given its simple task.
 
 ## Installation
 PykeBot2 requires Python Version 3.7+.
@@ -65,7 +65,7 @@ As far as I know none of the tournament platforms overs an API for collecting te
 - add configuration like region
 
 ## Credits
-The PykeBot Icon was designed by the talented [Binidi](https://www.deviantart.com/binidi/art/Pyke-Icon-808245658)
+The PykeBot Icon was designed by the talented [Binidi](https://www.deviantart.com/binidi/art/Pyke-Icon-808245658).
 
 ## License
 This software is made available under the Mozialla Public License Version 2.0.
