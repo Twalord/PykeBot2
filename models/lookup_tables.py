@@ -4,10 +4,19 @@ Contains various lookup tables
 """
 
 """
+debug flag used by query
+"""
+debug_flag = False
+
+"""
 lookup tables for commands and flags
 """
 # commands
 stalk_command_lookup = {"stalk", "scrape"}
+
+help_commands_lookup = {"help", "?"}
+
+all_commands_lookup = {*stalk_command_lookup, *help_commands_lookup}
 
 # flags
 with_ranks_flag_lookup = {"rank", "ranks", "r"}
@@ -47,6 +56,26 @@ summoners_inn_base_url = "summoners-inn.de"
 summoners_inn_cup_key_words = {"leagues"}
 
 summoners_inn_team_key_words = {"teams", "leagues"}
+
+"""
+help message returned when calling a help command
+"""
+
+help_message = "Welcome to PykeBot2!\n\n" \
+               "Every command has the pattern:\n" \
+               ".pb command [flags] [data]\n" \
+               "where valid commands are 'stalk' and 'help'.\n\n" \
+               "stalk takes a valid url to a tournament as data and stalks its teams and players.\n" \
+               "Supported for stalking are Prime League, Toornament and Summoners Inn.\n\n" \
+               "stalk accepts the flags:\n" \
+               "'rank', for adding ranks to each player via op.gg and\n" \
+               "'file', for output as file instead of as chat messages\n\n"\
+               "For example: .pb rank file <url>\n" \
+               "would return teams and players for the given <url> with ranks as a file.\n\n"\
+               "help returns this message and ignores any flags or data.\n" \
+               "For further information on PykeBot2 see:\n" \
+               "https://github.com/Twalord/PykeBot2"
+
 
 """
 lookup tables for rank_stalker
