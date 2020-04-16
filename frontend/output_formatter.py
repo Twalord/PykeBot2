@@ -6,7 +6,7 @@ Responsible for creating the output message from the payload by calling str mess
 
 import logging
 from models.query import Query
-from models.data_models import Error, Payload, Message
+from models.data_models import Error, Payload, Message, TeamList, Team
 from models.lookup_tables import as_file_flag_lookup, with_ranks_flag_lookup
 
 logger = logging.getLogger("pb_logger")
@@ -35,6 +35,23 @@ def format_payload(query: Query):
     if isinstance(query.payload, Message):
         format_message(query)
         return
+
+    # additional case for valid TeamList payloads with 0 teams
+    if isinstance(query.payload, TeamList):
+        if len(query.payload.teams) == 0:
+            error_message = f"Command {str(query)} returned no teams.\n" \
+                            f"Are there even valid teams in the given tournament?"
+            logger.error(error_message)
+            create_error(query, error_message)
+            return
+
+    # additional case for valid Team payloads with 0 players
+    if isinstance(query.payload, Team):
+        if len(query.payload.players) == 0:
+            error_message = f"Command {str(query)} returned no players.\n" \
+                            f"Are there even valid players in the given team?"
+            logger.error(error_message)
+            create_error(query, error_message)
 
     # identify flags,
     rank = False
