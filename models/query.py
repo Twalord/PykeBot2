@@ -10,7 +10,7 @@ from dataclasses import dataclass
 import logging
 from discord import Message
 from models.data_models import Payload
-from models.lookup_tables import next_step_lookup, forward_to_lookup
+from models.lookup_tables import next_step_lookup, forward_to_lookup, debug_flag
 from models.errors import InvalidForwardToError, InvalidNextStepError
 from typing import Set
 
@@ -88,14 +88,17 @@ class Query:
         :return: Returns extensive information on the query for debugging purpose.
         :rtype: str
         """
-        out = "\n"
-        out += f"raw_command: {self.raw_command}\n"
-        out += f"context_type: {self.context_type}\n"
-        out += f"payload type: {type(self.payload)}\n"
-        out += f"data: {self.data}\n"
-        out += f"flags: {str(self.flags)}\n"
-        out += f"forward_to: {self.forward_to}\n"
-        out += f"next_step: {self.next_step}\n"
+        if debug_flag:
+            out = "\n"
+            out += f"raw_command: {self.raw_command}\n"
+            out += f"context_type: {self.context_type}\n"
+            out += f"payload type: {type(self.payload)}\n"
+            out += f"data: {self.data}\n"
+            out += f"flags: {str(self.flags)}\n"
+            out += f"forward_to: {self.forward_to}\n"
+            out += f"next_step: {self.next_step}\n"
+        else:
+            out = f"'{self.raw_command}'"
         return out
 
     def update_query(self, forward_to: str, next_step: str, data: str = None, flags: Set[str] = None, output_message: str = None, payload: Payload = None):
