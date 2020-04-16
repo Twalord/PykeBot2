@@ -1,6 +1,8 @@
-from event_loop_master import query_forwarder, run_main_loop
+from event_loop_master import query_forwarder
 import asyncio
 from models.query import Query
+
+# TODO this test is outdated and needs to be removed or updated
 
 
 def test_query_forwarder():
@@ -19,6 +21,7 @@ def test_query_forwarder():
             query = await queue.get()
             assert query.forward_to == identity
             count -= 1
+            print("queue_tester received one Query")
             queue.task_done()
         stop.set()
 
@@ -26,9 +29,9 @@ def test_query_forwarder():
         """
         :description: Coroutine that inserts a few static test Queries into a given Queue.
         """
-        test_query1 = Query("", "test", forward_to="test1")
-        test_query2 = Query("", "test", forward_to="test2")
-        test_query3 = Query("", "test", forward_to="test2")
+        test_query1 = Query("", "test1", "test")
+        test_query2 = Query("", "test2", "test")
+        test_query3 = Query("", "test2", "test")
         await queue.put(test_query1)
         await queue.put(test_query2)
         queue.put_nowait(test_query3)
@@ -38,7 +41,9 @@ def test_query_forwarder():
         :description: Coroutine that waits for two events to be set before stopping the current  event loop.
         """
         await stop1.wait()
+        print("first event was received")
         await stop2.wait()
+        print("second event was received")
         asyncio.get_event_loop().stop()
 
     incoming_queue = asyncio.Queue()
