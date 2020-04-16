@@ -11,6 +11,7 @@ from discord import Message, File, Game
 from utils.token_loader import load_token
 from models.query import Query
 from models.lookup_tables import as_file_flag_lookup
+from models.data_models import Error
 
 logger = logging.getLogger('pb_logger')
 prefix = ".pb"
@@ -35,8 +36,8 @@ class PykeBot(commands.Bot):
         while not self.is_closed():
             query = await self.output_queue.get()
 
-            # check if send as file
-            if len(as_file_flag_lookup.intersection(query.flags)) >= 1:
+            # check if send as file, in case of error always skip file flag
+            if len(as_file_flag_lookup.intersection(query.flags)) >= 1 and not isinstance(query.payload, Error):
 
                 # prepare file creation
                 title = query.output_message.split("\n", 1)[0]
@@ -97,8 +98,9 @@ async def on_ready():
     """
     logger.info(f'Logged in as {pb.user.name}')
     logger.info(f'with id {pb.user.id}')
+    logger.info("PykeBot2 is ready!")
 
-    await pb.change_presence(activity=Game(name=".pb ping", start=datetime.datetime.now()))
+    await pb.change_presence(activity=Game(name=".pb help", start=datetime.datetime.now()))
 
 
 @pb.event
