@@ -13,8 +13,16 @@ from models.data_models import TeamList
 logger = logging.getLogger("pb_logger")
 
 
-async def stalk_summoners_inn_cup(summoners_inn_cup_link: str, session: aiohttp.ClientSession=None):
-
+async def stalk_summoners_inn_cup(summoners_inn_cup_link: str, session: aiohttp.ClientSession = None):
+    """
+    Takes a link to a summoners inn cup, extracts all team links and uses the prime league team stalker, to stalk the teams.
+    :param summoners_inn_cup_link: A valid link to a summoners inn cup like Hausarrest.
+    :type summoners_inn_cup_link: str
+    :param session: A reusable ClientSession
+    :type session: aiohttp.ClientSession
+    :return: A team list containing all teams of the cup.
+    :rtype: TeamList
+    """
     if session is None:
         async with aiohttp.ClientSession() as session:
             return await stalk_summoners_inn_cup(summoners_inn_cup_link, session)
