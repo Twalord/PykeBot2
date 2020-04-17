@@ -125,7 +125,7 @@ class Team(Payload):
 
     def __str__(self):
         if self.average_rank is None:
-            return f"{self.name} | {self.multi_link}"
+            return f"{self.name} | {self.multi_link}\n"
         else:
             return f"{self.name} Ø: {str(self.average_rank)} max: {str(self.max_rank)} | {self.multi_link}\n"
 
@@ -140,7 +140,7 @@ class Team(Payload):
     def discord_str(self):
         # adds __ for discord formatting
         if self.average_rank is None:
-            return f"__{self.name}__ | {self.multi_link}"
+            return f"__{self.name}__ | {self.multi_link}\n"
         else:
             return f"__{self.name}__ Ø: {str(self.average_rank)} max: {str(self.max_rank)} | {self.multi_link}\n"
 
