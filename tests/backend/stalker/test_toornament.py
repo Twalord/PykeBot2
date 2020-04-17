@@ -3,7 +3,7 @@ import sys
 import pytest
 import os
 
-recreate_test_data = True
+recreate_test_data = False
 
 
 @pytest.mark.asyncio
@@ -11,7 +11,7 @@ async def test_positive_stalk_toornament_tournament():
     from backend.stalker import toornament
     from models.data_models import TeamList
 
-    url = "https://www.toornament.com/tournaments/2324026559405285376/information"
+    url = "https://www.toornament.com/tournaments/2324026559405285376"
 
     team_list = await toornament.stalk_toornament_tournament(url)
 

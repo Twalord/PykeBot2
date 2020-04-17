@@ -9,14 +9,14 @@ import sys
 import pytest
 import os
 
-recreate_test_data = True
+recreate_test_data = False
 
 
 @pytest.mark.asyncio
 async def test_positive_stalk_summoners_inn_cup():
     from backend.stalker import summoners_inn
 
-    url = "https://www.summoners-inn.de/de/leagues/hausarrest/1468-cup-1/participants"
+    url = "https://www.summoners-inn.de/de/leagues/hausarrest/1492-playoffs"
 
     team_list = await summoners_inn.stalk_summoners_inn_cup(url)
 
@@ -36,7 +36,7 @@ async def test_positive_stalk_summoners_inn_cup():
 async def test_positive_stalk_summoners_inn_team():
     from backend.stalker import prime_league, summoners_inn
 
-    url = "https://www.summoners-inn.de/de/leagues/hausarrest/1468-cup-1/teams/90176-team-fail-flash"
+    url = "https://www.summoners-inn.de/de/leagues/hausarrest/1492-playoffs/teams/115966-esug-ultimate-five-feeders"
 
     team = await prime_league.stalk_prime_league_team(url)
 
