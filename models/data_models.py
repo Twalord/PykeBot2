@@ -94,6 +94,14 @@ class Player(Payload):
             # adds some * for formatting in discord
             return f"{self.summoner_name} *{str(self.rank)}*"
 
+    def __eq__(self, other):
+        if isinstance(other, Player):
+            return self.summoner_name == other.summoner_name
+        return False
+
+    def __hash__(self):
+        return hash(self.summoner_name)
+
 
 @dataclass
 class Team(Payload):
@@ -108,7 +116,7 @@ class Team(Payload):
 
     def __init__(self, name, players):
         self.name = name
-        self.players = players
+        self.players = list(set(players))
         self.multi_link = self.build_op_gg_multi_link()
 
     def build_op_gg_multi_link(self):
