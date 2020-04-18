@@ -82,7 +82,7 @@ async def backend_loop(forward_queue: asyncio.Queue, backend_queue: asyncio.Queu
 
             # rank stalking is the slowest part and for mid to large sized tournaments it takes some time
             if isinstance(payload, TeamList):
-                if len(payload.teams) > 50:
+                if len(payload.teams) > 30:
                     extra_message = Message(f"Rank stalk for {len(payload.teams)} teams might take a moment, please "
                                             f"wait.")
                     extra_query = Query(query.context_type, "frontend", "format", discord_channel=query.discord_channel,
