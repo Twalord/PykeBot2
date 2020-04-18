@@ -70,7 +70,7 @@ help_message = "Welcome to PykeBot2!\n\n" \
                "stalk accepts the flags:\n" \
                "'rank', for adding ranks to each player via op.gg and\n" \
                "'file', for output as file instead of as chat messages\n\n"\
-               "For example: .pb rank file <url>\n" \
+               "For example: .pb stalk rank file <url>\n" \
                "would return teams and players for the given <url> with ranks as a file.\n\n"\
                "help returns this message and ignores any flags or data.\n" \
                "For further information on PykeBot2 see:\n" \
