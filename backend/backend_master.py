@@ -73,7 +73,7 @@ async def backend_loop(forward_queue: asyncio.Queue, backend_queue: asyncio.Queu
             # TODO add better error handling based on exception raised
             except Exception as e:
                 error_message = f"While stalking a {type(e)} occurred. Original query: {query}"
-                logger.error(error_message)
+                logger.exception(error_message)
                 create_error(query, error_message)
                 forward_queue.put_nowait(query)
                 backend_queue.task_done()

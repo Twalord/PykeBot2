@@ -121,7 +121,13 @@ async def stalk_toornament_team(toornament_team_link: str, session: aiohttp.Clie
     players = []
     for container in name_containers:
         dirty_string = container.text
-        dirt, name = dirty_string.split(":")
+
+        dirty_split = dirty_string.split(":")
+        # In case someone decides not to enter an actual summoner name
+        if len(dirty_split) == 2:
+            name = dirty_split[1]
+        else:
+            continue
         name = name.replace("\n", "")
         name = name.strip()
         players.append(Player(name))
