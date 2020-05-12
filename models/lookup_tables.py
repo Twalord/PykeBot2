@@ -16,7 +16,9 @@ stalk_command_lookup = {"stalk", "scrape"}
 
 help_commands_lookup = {"help", "?"}
 
-all_commands_lookup = {*stalk_command_lookup, *help_commands_lookup}
+uniliga_seitenwahl_commands_lookup = {"uniliga-sides", "uniliga"}
+
+all_commands_lookup = {*stalk_command_lookup, *help_commands_lookup, *uniliga_seitenwahl_commands_lookup}
 
 # flags
 with_ranks_flag_lookup = {"rank", "ranks", "r"}
@@ -75,6 +77,14 @@ help_message = "Welcome to PykeBot2!\n\n" \
                "help returns this message and ignores any flags or data.\n" \
                "For further information on PykeBot2 see:\n" \
                "https://github.com/Twalord/PykeBot2"
+
+"""
+Uniliga Seitenwahl rules, as we tend to forget or confuse them
+"""
+
+uniliga_seitenwahl_rules = "§ 3.2.2 Best-of-2 \n" \
+                           "Jedes Team spielt je einmal auf der linken und auf der rechten Seite.\n" \
+                           "Das auf Toornament zuerst genannte Team darf dabei im ersten Spiel die Seite wählen."
 
 
 """

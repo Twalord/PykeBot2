@@ -5,7 +5,8 @@ Responsible for understanding the raw command in a given Query and setting next 
 """
 from models.query import Query
 import logging
-from models.lookup_tables import stalk_command_lookup, all_flags_lookup, help_commands_lookup, help_message
+from models.lookup_tables import stalk_command_lookup, all_flags_lookup, help_commands_lookup, help_message,\
+    uniliga_seitenwahl_commands_lookup, uniliga_seitenwahl_rules
 from models.data_models import Error, Message
 
 logger = logging.getLogger("pb_logger")
@@ -73,6 +74,11 @@ def interpret_command(query: Query):
     elif base_command in help_commands_lookup:
         help_m = Message(help_message)
         query.update_query("frontend", "format", payload=help_m)
+        return
+
+    elif base_command in uniliga_seitenwahl_commands_lookup:
+        uniliga_m = Message(uniliga_seitenwahl_rules)
+        query.update_query("frontend", "format", payload=uniliga_m)
         return
 
     else:
