@@ -71,7 +71,7 @@ help_message = "Welcome to PykeBot2!\n\n" \
                ".pb command [flags] [data]\n" \
                "where valid commands are 'stalk' and 'help'.\n\n" \
                "stalk takes a valid url to a tournament as data and stalks its teams and players.\n" \
-               "Supported for stalking are Prime League, Toornament and Summoners Inn.\n\n" \
+               "Supported for stalking are Prime League, Toornament, Summoners Inn and Battlefy.\n\n" \
                "stalk accepts the flags:\n" \
                "'rank', for adding ranks to each player via op.gg and\n" \
                "'file', for output as file instead of as chat messages\n\n"\
