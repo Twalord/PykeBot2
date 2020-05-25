@@ -11,8 +11,6 @@ import bs4
 import json
 # from backend.stalker.op_gg_rank import calc_average_and_max_team_rank
 
-import asyncio
-
 logger = logging.getLogger('pb_logger')
 
 
@@ -39,7 +37,7 @@ async def stalk_battlefy_tournament(battlefy_url: str):
             page = await response.text()
 
     # parse the data to create Team and Player Objects
-    soup = bs4.BeautifulSoup(page, features="lxml")
+    soup = bs4.BeautifulSoup(page, features="html.parser")
 
     json_data = json.loads(soup.text)
 
