@@ -11,6 +11,7 @@ Supported tournament platforms are:
 - [Prime League](https://www.primeleague.gg/de/start)
 - [Toornmanet](https://www.toornament.com/en_US/)
 - [Summoners Inn](https://www.summoners-inn.de/de/start)
+- [Battlefy](https://battlefy.com/)
 
 ## But why?
 The first version of [PykeBot](https://github.com/Twalord/PykeBot) arose an annoyance.
