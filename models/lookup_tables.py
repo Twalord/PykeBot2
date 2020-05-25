@@ -59,6 +59,9 @@ summoners_inn_cup_key_words = {"leagues"}
 
 summoners_inn_team_key_words = {"teams", "leagues"}
 
+
+battlefy_base_url = "battlefy.com"
+
 """
 help message returned when calling a help command
 """
