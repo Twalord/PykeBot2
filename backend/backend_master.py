@@ -12,7 +12,7 @@ from models.query import Query
 from backend.stalker import op_gg_rank, prime_league, toornament, summoners_inn, battlefy
 from models.lookup_tables import prime_league_base_url, prime_league_group_key_words, prime_league_season_key_words, \
     prime_league_team_key_words, toornament_base_url, toornament_tournament_key_words, with_ranks_flag_lookup, \
-    summoners_inn_base_url, summoners_inn_cup_key_words, summoners_inn_team_key_words, battlefy_base_url
+    summoners_inn_base_url, summoners_inn_cup_key_words, summoners_inn_team_key_words, battlefy_base_url, prime_league_use_group_flag_lookup
 
 logger = logging.getLogger('pb_logger')
 
@@ -158,7 +158,17 @@ def determine_stalker(query: Query):
         return None
 
     if website == prime_league_str:
-        if all(elem in url.split("/") for elem in prime_league_group_key_words):
+        # Force group stalking in case the season stalk is not possible yet
+        if len(prime_league_use_group_flag_lookup.intersection(query.flags)) >= 1:
+            website_type = "group"
+            # fix url in this case
+            url = query.data
+            url_split = url.split("/")[:7]
+            url_split.append("participants")
+            url = "/".join(url_split)
+            query.data = url
+
+        elif all(elem in url.split("/") for elem in prime_league_group_key_words):
             website_type = "group"
         elif all(elem in url.split("/") for elem in prime_league_team_key_words):
             website_type = "team"

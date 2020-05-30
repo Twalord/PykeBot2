@@ -23,9 +23,10 @@ all_commands_lookup = {*stalk_command_lookup, *help_commands_lookup, *uniliga_se
 # flags
 with_ranks_flag_lookup = {"rank", "ranks", "r"}
 as_file_flag_lookup = {"file", "f"}
+prime_league_use_group_flag_lookup = {"group"}
 
 # flag pool
-all_flags_lookup = {*with_ranks_flag_lookup, *as_file_flag_lookup}
+all_flags_lookup = {*with_ranks_flag_lookup, *as_file_flag_lookup, *prime_league_use_group_flag_lookup}
 
 """
 lookup tables for query parameters
@@ -79,7 +80,10 @@ help_message = "Welcome to PykeBot2!\n\n" \
                "would return teams and players for the given <url> with ranks as a file.\n\n"\
                "help returns this message and ignores any flags or data.\n" \
                "For further information on PykeBot2 see:\n" \
-               "https://github.com/Twalord/PykeBot2"
+               "https://github.com/Twalord/PykeBot2\n" \
+               "\n" \
+               "Additional flags: \n" \
+               "'group' to force prime league group stalker instead of season stalker."
 
 """
 Uniliga Seitenwahl rules, as we tend to forget or confuse them

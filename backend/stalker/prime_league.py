@@ -169,6 +169,11 @@ async def stalk_prime_league_group(prime_league_group_link: str, session: aiohtt
         # extract all team-links
         team_links = [link["href"] for link in list_container.find_all("a", href=True)]
 
+    # if finding team links fails, try a work around
+    if len(team_links) == 0:
+        team_links = [link["href"] for link in soup.find_all("a", href=True)]
+        team_links = filter(filter_team_links, team_links)
+
     # div_name = driver.find_element_by_xpath("//*[@id=\"container\"]/div/h1").text
     div_name = soup.select("#container > div > h1")[0].text
 
