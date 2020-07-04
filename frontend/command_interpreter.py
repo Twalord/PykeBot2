@@ -82,7 +82,7 @@ def interpret_command(query: Query):
         return
 
     elif base_command in version_command_lookup:
-        version_m = Message(f"PykeBot2 Version {version},\n released on {last_updated}")
+        version_m = Message(f"PykeBot2 Version {version}\n Released on {last_updated}")
         query.update_query("frontend", "format", payload=version_m)
 
     else:
