@@ -6,7 +6,7 @@ Responsible for understanding the raw command in a given Query and setting next 
 from models.query import Query
 import logging
 from models.lookup_tables import stalk_command_lookup, all_flags_lookup, help_commands_lookup, help_message,\
-    uniliga_seitenwahl_commands_lookup, uniliga_seitenwahl_rules
+    uniliga_seitenwahl_commands_lookup, uniliga_seitenwahl_rules, version_command_lookup, version, last_updated
 from models.data_models import Error, Message
 
 logger = logging.getLogger("pb_logger")
@@ -80,6 +80,10 @@ def interpret_command(query: Query):
         uniliga_m = Message(uniliga_seitenwahl_rules)
         query.update_query("frontend", "format", payload=uniliga_m)
         return
+
+    elif base_command in version_command_lookup:
+        version_m = Message(f"PykeBot2 Version {version},\n released on {last_updated}")
+        query.update_query("frontend", "format", payload=version_m)
 
     else:
         error_message = f"Only basic stalking has been implemented so far, command {str(query)} failed.\n" \

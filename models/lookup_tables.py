@@ -9,6 +9,13 @@ debug flag used by query
 debug_flag = False
 
 """
+Version number
+TODO: Keep version number up to date!
+"""
+version = "2.0"
+last_updated = "4.7.2020"
+
+"""
 lookup tables for commands and flags
 """
 # commands
@@ -18,7 +25,10 @@ help_commands_lookup = {"help", "?"}
 
 uniliga_seitenwahl_commands_lookup = {"uniliga-sides", "uniliga"}
 
-all_commands_lookup = {*stalk_command_lookup, *help_commands_lookup, *uniliga_seitenwahl_commands_lookup}
+version_command_lookup = {"version", "v", "V", "Version"}
+
+all_commands_lookup = {*stalk_command_lookup, *help_commands_lookup,
+                       *uniliga_seitenwahl_commands_lookup, *version_command_lookup}
 
 # flags
 with_ranks_flag_lookup = {"rank", "ranks", "r"}
