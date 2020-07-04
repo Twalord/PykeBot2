@@ -1,6 +1,6 @@
 # PykeBot2
 
-![alt text](./PykeIconResize.jpg)
+![alt text](./PykeIcon2Resize.png)
 
 PykeBot2 is a Discord Bot for gathering information on League of Legends players participating in tournaments.
 Given a link to online tournament, where the summoner names of the players are visible,
