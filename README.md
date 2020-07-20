@@ -14,7 +14,7 @@ Supported tournament platforms are:
 - [Battlefy](https://battlefy.com/)
 
 ## But why?
-The first version of [PykeBot](https://github.com/Twalord/PykeBot) arose an annoyance.
+The first version of [PykeBot](https://github.com/Twalord/PykeBot) arose out of an annoyance.
 When playing on one of the tournament platforms we would like to have a op.gg multi-link of our opponents to prepare our draft.
 So someone has to copy and paste every single player summoner name from the tournament page into the op.gg form.
 The first PykeBot was created to automate this process and did so quite well but wasn't designed to be easily expended or easy to use by anyone but its creator.
