@@ -9,10 +9,13 @@ import logging
 import asyncio
 from models.data_models import Error, Message, Payload, Team, TeamListList, TeamList
 from models.query import Query
-from backend.stalker import op_gg_rank, prime_league, toornament, summoners_inn, battlefy
+from models.errors import TokenLoadingError
+from utils import token_loader
+from backend.stalker import op_gg_rank, prime_league, toornament, summoners_inn, battlefy, toornament_api
 from models.lookup_tables import prime_league_base_url, prime_league_group_key_words, prime_league_season_key_words, \
     prime_league_team_key_words, toornament_base_url, toornament_tournament_key_words, with_ranks_flag_lookup, \
-    summoners_inn_base_url, summoners_inn_cup_key_words, summoners_inn_team_key_words, battlefy_base_url, prime_league_use_group_flag_lookup
+    summoners_inn_base_url, summoners_inn_cup_key_words, summoners_inn_team_key_words, battlefy_base_url,\
+    prime_league_use_group_flag_lookup, dont_use_api_flag_lookup, used_toornament_api_flag_lookup
 
 logger = logging.getLogger('pb_logger')
 
@@ -23,7 +26,8 @@ website_type_to_prime_league_stalker = {"group": prime_league.stalk_prime_league
                                         "team": prime_league.stalk_prime_league_team,
                                         "season": prime_league.stalk_prime_league_season}
 
-website_type_to_toornament_stalker = {"tournament": toornament.stalk_toornament_tournament}
+website_type_to_toornament_stalker = {"tournament": toornament.stalk_toornament_tournament,
+                                      "tournament_api": toornament_api.stalk_toornament_api_tournament}
 
 website_type_to_summoners_inn_stalker = {"cup": summoners_inn.stalk_summoners_inn_cup,
                                          "team": prime_league.stalk_prime_league_team}
@@ -47,6 +51,7 @@ async def backend_loop(forward_queue: asyncio.Queue, backend_queue: asyncio.Queu
         # check next_step to perform
         if query.next_step == "stalk":
             stalker = determine_stalker(query)
+            logger.debug(f"Using stalker function {stalker.__name__}")
 
             if stalker is None:
                 # if stalker is none an error has occurred during stalker determination and saved to query
@@ -198,6 +203,17 @@ def determine_stalker(query: Query):
             create_error(query, error_message)
             return None
 
+        found_toornament_api_token = False
+        # try loading a Toornament Api Token
+        try:
+            token_loader.load_token("ToornamentToken")
+            found_toornament_api_token = True
+        except TokenLoadingError as e:
+            logger.info("Failed to load ToornamentToken, using HTML scraper.")
+
+        if found_toornament_api_token and not len(dont_use_api_flag_lookup.intersection(query.flags)) >= 1:
+            website_type = website_type + "_api"
+            query.flags.add(*used_toornament_api_flag_lookup)
         return website_type_to_toornament_stalker.get(website_type)
 
     if website == summoners_inn_str:

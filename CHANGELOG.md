@@ -1,3 +1,7 @@
+# 2.1.0
+3.8.2020
+
+
 # 2.0.1
 - Added the new PykeBot icon
 - Removed the old one 

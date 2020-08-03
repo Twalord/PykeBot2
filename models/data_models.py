@@ -99,6 +99,9 @@ class Player(Payload):
             return self.summoner_name == other.summoner_name
         return False
 
+    def __lt__(self, other):
+        return isinstance(other, Player) and self.summoner_name < other.summoner_name
+
     def __hash__(self):
         return hash(self.summoner_name)
 
@@ -126,6 +129,7 @@ class Team(Payload):
         """
         base_url = f"https://euw.op.gg/multi/query="
         multi_link = base_url
+        self.players.sort()
         for player in self.players:
             multi_link += player.summoner_name.replace(" ", "")
             multi_link += "%2C"
@@ -185,10 +189,11 @@ class TeamList(Payload):
         out = f"{self.name} \n\n"
         ranked_teams = [team for team in self.teams if team.average_rank is not None]
         unranked_teams = [team for team in self.teams if team.average_rank is None]
-        sorted_teams = sorted(ranked_teams, key=lambda t: t.average_rank.rank_int, reverse=True)
-        for team in sorted_teams:
+        sorted_ranked_teams = sorted(ranked_teams, key=lambda t: t.average_rank.rank_int, reverse=True)
+        sorted_unranked_teams = sorted(unranked_teams, key=lambda t: t.name)
+        for team in sorted_ranked_teams:
             out += team.extended_str() + "\n"
-        for team in unranked_teams:
+        for team in sorted_unranked_teams:
             out += team.extended_str() + "\n"
         out += "\n"
         return out

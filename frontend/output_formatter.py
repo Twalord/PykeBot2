@@ -7,7 +7,7 @@ Responsible for creating the output message from the payload by calling str mess
 import logging
 from models.query import Query
 from models.data_models import Error, Payload, Message, TeamList, Team
-from models.lookup_tables import as_file_flag_lookup, with_ranks_flag_lookup
+from models.lookup_tables import as_file_flag_lookup, with_ranks_flag_lookup, used_toornament_api_flag_lookup
 
 logger = logging.getLogger("pb_logger")
 
@@ -81,6 +81,10 @@ def format_payload(query: Query):
         else:
             # do normal formatting
             output = str(query.payload)
+
+    # Whenever the toornament api is used, this line must be appended to the output
+    if len(query.flags.intersection(used_toornament_api_flag_lookup)) >= 1:
+        output = f"{output}\nPowered by Toornament https://www.toornament.com"
 
     query.update_query("frontend", "display", output_message=output)
 

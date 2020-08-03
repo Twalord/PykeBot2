@@ -11,9 +11,33 @@ async def test_positive_stalk_toornament_tournament():
     from backend.stalker import toornament
     from models.data_models import TeamList
 
-    url = "https://www.toornament.com/tournaments/2324026559405285376"
+    url = "https://www.toornament.com/en_US/tournaments/2324026559405285376"
 
     team_list = await toornament.stalk_toornament_tournament(url)
+
+    assert len(team_list.teams) > 0
+    assert isinstance(team_list, TeamList)
+
+    extended_result_str = team_list.extended_str()
+
+    # In case the formatting changes, the test data needs to be recreated and checked manually
+    if recreate_test_data:
+        with open(os.path.join(sys.path[0], "expected_result_stalk_toornament_tournament"), "w+", encoding='utf-8') as file:
+            file.write(extended_result_str)
+
+    with open(os.path.join(sys.path[0], "expected_result_stalk_toornament_tournament"), "r", encoding='utf-8') as file:
+        expected_result = file.read()
+        assert extended_result_str == expected_result
+
+
+@pytest.mark.asyncio
+async def test_positive_stalk_toornament_api_tournament():
+    from backend.stalker import toornament_api
+    from models.data_models import TeamList
+
+    url = "https://www.toornament.com/en_US/tournaments/2324026559405285376"
+
+    team_list = await toornament_api.stalk_toornament_api_tournament(url)
 
     assert len(team_list.teams) > 0
     assert isinstance(team_list, TeamList)

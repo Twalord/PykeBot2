@@ -33,6 +33,11 @@ Copy the token to a file called `DiscordToken`.
 The file must contain nothing else but the token and have no file ending.
 Start PykeBot2 via `python main.py` in a terminal.
 
+### Optional: Toornament API token
+PykeBot2 supports using the Toornament API instead of the standard HTML scraper.
+For this a valid Toornament API token is required, which officially be acquired over the process described [here](https://developer.toornament.com/v2/overview/get-started).
+The token must be placed in a filed called `ToornamentToken` in the project root, similar to the Discord token.
+
 ## How to use
 PykeBot2 can be added to one or multiple Discord server but it also accepts direct messages.
 PykeBot2 ignores all messages that do not start with `.pb`.
@@ -60,7 +65,7 @@ As far as I know none of the tournament platforms overs an API for collecting te
 
 ## TODO
 
-- add a database (preferably redis) for saving past stalks and to avoid stalking the same tournament multiple times
+- add a database (MariaDB) for saving past stalks and to avoid stalking the same tournament multiple times
 - switch from rank stalking via op.gg to the Riot API itself
 - add more tournament platforms
 - add configuration like region
@@ -69,4 +74,4 @@ As far as I know none of the tournament platforms overs an API for collecting te
 The PykeBot Icon was designed by the talented [Binidi](https://www.deviantart.com/binidi/art/Pyke-Icon-808245658).
 
 ## License
-This software is made available under the Mozialla Public License Version 2.0.
+This software is made available under the Mozilla Public License Version 2.0.

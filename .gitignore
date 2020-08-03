@@ -14,6 +14,9 @@ venv_min/
 # discord Token
 /DiscordToken
 
+# Toornament Token
+/ToornamentToken
+
 # generated doc files
 docs/source/generated/
 

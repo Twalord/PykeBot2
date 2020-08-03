@@ -6,7 +6,7 @@ import logging
 import asyncio
 from discord.ext import commands
 import datetime
-from discord import Message, File, Game
+from discord import Message, File, Game, __version__
 
 from utils.token_loader import load_token
 from models.query import Query
@@ -86,6 +86,7 @@ async def run_discord_bot_loop(forward_queue: asyncio.Queue, output_queue: async
     pb.forward_queue = forward_queue
     pb.output_queue = output_queue
     await pb.login(d_token)
+    logger.info(f"Stating Discord Bot, using discord.py version {__version__}")
     await pb.connect()
 
 
