@@ -20,11 +20,12 @@ logger = logging.getLogger("pb_logger")
 
 async def stalk_toornament_api_tournament(toornament_link: str) -> TeamList:
     """
-
-    :param toornament_link:
-    :type toornament_link:
-    :return:
-    :rtype:
+    Stalks teams in the given toornament link using the toornament api.
+    A valid token in a file called ToornamentToken must be in the working directory for this.
+    :param toornament_link: A valid link to a toornament tournament
+    :type toornament_link: str
+    :return: A TeamList object containing all teams from the given tournament
+    :rtype: TeamList
     """
     api_token = token_loader.load_token("ToornamentToken")
 
@@ -76,13 +77,13 @@ async def stalk_toornament_api_tournament(toornament_link: str) -> TeamList:
 
 def parse_participants(participants: list, tournament_name: str) -> TeamList:
     """
-
-    :param participants:
-    :type participants:
-    :param tournament_name:
-    :type tournament_name:
-    :return:
-    :rtype:
+    Parses the given participant list and tournament name to create a TeamList object.
+    :param participants: Expects a participant list created from the toornament api.
+    :type participants: list[dict]
+    :param tournament_name: The name of the tournament.
+    :type tournament_name: str
+    :return: A TeamList object created from the given participant list and tournament name.
+    :rtype: TeamList
     """
     total = {}
     for team in participants:
