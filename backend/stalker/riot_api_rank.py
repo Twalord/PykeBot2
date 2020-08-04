@@ -21,7 +21,7 @@ async def stalk_player_riot_api(sum_name: str, api_token: str, session=None) -> 
     :param api_token: Valid Riot api token.
     :type api_token: str
     :param session: When a session already exits, it should be reused as much as possible for better performance.
-    :type session: aiohttp.ClientSession
+    :type session: aiohttp.ClientSession or RateLimiter
     :return: String representation of the rank of the player.
     :rtype: str
     """
@@ -67,13 +67,15 @@ async def stalk_player_riot_api(sum_name: str, api_token: str, session=None) -> 
     return f"{tier} {rank}"
 
 
-async def add_player_rank(player: Player, api_token: str, session = None):
+async def add_player_rank(player: Player, api_token: str, session=None):
     """
     :description: Calls stalk player riot using the summoner name of the given Player and adds a Rank obj to the Player.
     :param player: A Player obj with a summoner name.
     :type player: Player
+    :param api_token: Valid Riot api token.
+    :type api_token: str
     :param session: When a session already exits, it should be reused as much as possible for better performance.
-    :type session: aiohttp.ClientSession
+    :type session: aiohttp.ClientSession  or RateLimiter
     :return: None
     :rtype: None
     """
@@ -86,13 +88,15 @@ async def add_player_rank(player: Player, api_token: str, session = None):
     return
 
 
-async def add_team_ranks(team: Team, api_token: str, session = None):
+async def add_team_ranks(team: Team, api_token: str, session=None):
     """
     :description: Calls add player rank for each player of the given team. Also sets the average and max team rank.
     :param team: A team with a list of players.
     :type team: Team
+    :param api_token: Valid Riot api token.
+    :type api_token: str
     :param session: When a session already exits, it should be reused as much as possible for better performance.
-    :type session: aiohttp.ClientSession
+    :type session: aiohttp.ClientSession or RateLimiter
     :return: None
     :rtype: None
     """
@@ -107,13 +111,15 @@ async def add_team_ranks(team: Team, api_token: str, session = None):
     return
 
 
-async def add_team_list_ranks(team_list: TeamList, api_token: str, session = None):
+async def add_team_list_ranks(team_list: TeamList, api_token: str, session=None):
     """
     :description: Calls add team ranks for each team in the given team list obj.
     :param team_list: A team list with a list of teams.
     :type team_list: TeamList
+    :param api_token: Valid Riot api token.
+    :type api_token: str
     :param session: When a session already exits, it should be reused as much as possible for better performance.
-    :type session: aiohttp.ClientSession
+    :type session: aiohttp.ClientSession or RateLimiter
     :return: None
     :rtype: None
     """
@@ -134,8 +140,10 @@ async def add_team_list_list_ranks(team_list_list: TeamListList, api_token: str,
     :description: Calls add team list ranks for each team list in the given team list list obj.
     :param team_list_list: A team list list with a list of team lists.
     :type team_list_list: TeamListList
+    :param api_token: Valid Riot api token.
+    :type api_token: str
     :param session: When a session already exits, it should be reused as much as possible for better performance.
-    :type session: aiohttp.ClientSession
+    :type session: aiohttp.ClientSession or RateLimiter
     :return: None
     :rtype: None
     """
