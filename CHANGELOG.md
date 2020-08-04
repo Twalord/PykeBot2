@@ -1,3 +1,7 @@
+# 2.2.2
+4.8.2020
+- Added legal boilerplate for riot api
+
 # 2.2.1
 4.8.2020
 - The Riot Api rate limit is now no longer exceeded, but using the test key is still slower compared to using op.gg

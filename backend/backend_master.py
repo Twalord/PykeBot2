@@ -15,7 +15,8 @@ from backend.stalker import op_gg_rank, prime_league, toornament, summoners_inn,
 from models.lookup_tables import prime_league_base_url, prime_league_group_key_words, prime_league_season_key_words, \
     prime_league_team_key_words, toornament_base_url, toornament_tournament_key_words, with_ranks_flag_lookup, \
     summoners_inn_base_url, summoners_inn_cup_key_words, summoners_inn_team_key_words, battlefy_base_url, \
-    prime_league_use_group_flag_lookup, dont_use_api_flag_lookup, used_toornament_api_flag_lookup
+    prime_league_use_group_flag_lookup, dont_use_api_flag_lookup, used_toornament_api_flag_lookup,\
+    used_riot_api_flag_lookup
 
 logger = logging.getLogger('pb_logger')
 
@@ -107,6 +108,7 @@ async def backend_loop(forward_queue: asyncio.Queue, backend_queue: asyncio.Queu
                     logger.info("Failed to load RiotToken, using op.gg instead.")
                 if found_riot_token and len(query.flags.intersection(dont_use_api_flag_lookup)) == 0:
                     await call_rank_stalker(payload, use_api=True)
+                    query.flags.add(*used_riot_api_flag_lookup)
                 else:
                     await call_rank_stalker(payload)
                 logger.debug(f"Finished rank stalk for query: {query.raw_command}")

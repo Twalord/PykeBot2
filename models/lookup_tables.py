@@ -12,7 +12,7 @@ debug_flag = False
 Version number
 TODO: Keep version number up to date!
 """
-version = "2.2.1"
+version = "2.2.2"
 last_updated = "4.8.2020"
 
 """
@@ -37,6 +37,8 @@ prime_league_use_group_flag_lookup = {"group"}
 dont_use_api_flag_lookup = {"no-api"}
 # internal flag used to signal, when to add the powered by toornament to an output
 used_toornament_api_flag_lookup = {"powered_by_toornament"}
+# internal flag used to signal, when to add the riot games legal boilerplate
+used_riot_api_flag_lookup = {"not_endorsed_by_riot_games"}
 
 # flag pool
 all_flags_lookup = {*with_ranks_flag_lookup, *as_file_flag_lookup, *prime_league_use_group_flag_lookup,
