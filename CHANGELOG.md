@@ -1,3 +1,7 @@
+# 2.2.1
+4.8.2020
+- The Riot Api rate limit is now no longer exceeded, but using the test key is still slower compared to using op.gg
+
 # 2.2.0
 4.8.2020
 - Added Riot Api for rank stalking as an alternative to the op gg stalker, however the rate limit of the api is quickly exceeded

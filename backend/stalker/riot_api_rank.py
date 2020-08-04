@@ -7,12 +7,13 @@ Uses the riot api to fetch the ranks of players
 import asyncio
 import logging
 import aiohttp
+import time
 from models.data_models import Player, Rank, Team, TeamList, TeamListList
 
 logger = logging.getLogger("pb_logger")
 
 
-async def stalk_player_riot_api(sum_name: str, api_token: str, session: aiohttp.ClientSession = None) -> str:
+async def stalk_player_riot_api(sum_name: str, api_token: str, session=None) -> str:
     """
     Uses the riot api to find the soloQ ranking of the given player.
     :param sum_name: Summoner name of the player.
@@ -27,27 +28,27 @@ async def stalk_player_riot_api(sum_name: str, api_token: str, session: aiohttp.
 
     if session is None:
         async with aiohttp.ClientSession() as session:
+            session = RateLimiter(session)
             return await stalk_player_riot_api(sum_name, api_token, session)
 
     summoner_resource_url = f"https://euw1.api.riotgames.com/lol/summoner/v4/summoners/by-name/{sum_name}"
 
     headers = {"X-Riot-Token": api_token}
 
-    async with aiohttp.ClientSession() as session:
-        async with session.get(summoner_resource_url, headers=headers) as r:
-            r_json = await r.json()
+    async with await session.get(summoner_resource_url, headers=headers) as r:
+        r_json = await r.json()
 
-        if r.status == 429:
-            logger.debug("Rate limit exceeded!")
-            return ""
-        summoner_id = r_json.get("id", "None")
-        if summoner_id == "None":
-            return ""
+    if r.status == 429:
+        logger.debug("Rate limit exceeded!")
+        return ""
+    summoner_id = r_json.get("id", "None")
+    if summoner_id == "None":
+        return ""
 
-        league_resource_url = f"https://euw1.api.riotgames.com/lol/league/v4/entries/by-summoner/{summoner_id}"
+    league_resource_url = f"https://euw1.api.riotgames.com/lol/league/v4/entries/by-summoner/{summoner_id}"
 
-        async with session.get(league_resource_url, headers=headers) as r:
-            r_json = await r.json()
+    async with await session.get(league_resource_url, headers=headers) as r:
+        r_json = await r.json()
 
     if type(r_json) is dict:
         r_json = [r_json]
@@ -66,7 +67,7 @@ async def stalk_player_riot_api(sum_name: str, api_token: str, session: aiohttp.
     return f"{tier} {rank}"
 
 
-async def add_player_rank(player: Player, api_token: str, session: aiohttp.ClientSession = None):
+async def add_player_rank(player: Player, api_token: str, session = None):
     """
     :description: Calls stalk player riot using the summoner name of the given Player and adds a Rank obj to the Player.
     :param player: A Player obj with a summoner name.
@@ -78,13 +79,14 @@ async def add_player_rank(player: Player, api_token: str, session: aiohttp.Clien
     """
     if session is None:
         async with aiohttp.ClientSession() as session:
+            session = RateLimiter(session)
             return await add_player_rank(player, api_token, session)
 
     player.rank = Rank(rank_string=await stalk_player_riot_api(player.summoner_name, api_token, session))
     return
 
 
-async def add_team_ranks(team: Team, api_token: str, session: aiohttp.ClientSession = None):
+async def add_team_ranks(team: Team, api_token: str, session = None):
     """
     :description: Calls add player rank for each player of the given team. Also sets the average and max team rank.
     :param team: A team with a list of players.
@@ -96,6 +98,7 @@ async def add_team_ranks(team: Team, api_token: str, session: aiohttp.ClientSess
     """
     if session is None:
         async with aiohttp.ClientSession() as session:
+            session = RateLimiter(session)
             return await add_team_ranks(team, api_token, session)
 
     await asyncio.gather(*(add_player_rank(player, api_token, session) for player in team.players))
@@ -104,7 +107,7 @@ async def add_team_ranks(team: Team, api_token: str, session: aiohttp.ClientSess
     return
 
 
-async def add_team_list_ranks(team_list: TeamList, api_token: str, session: aiohttp.ClientSession = None):
+async def add_team_list_ranks(team_list: TeamList, api_token: str, session = None):
     """
     :description: Calls add team ranks for each team in the given team list obj.
     :param team_list: A team list with a list of teams.
@@ -116,6 +119,7 @@ async def add_team_list_ranks(team_list: TeamList, api_token: str, session: aioh
     """
     if session is None:
         async with aiohttp.ClientSession() as session:
+            session = RateLimiter(session)
             return await add_team_list_ranks(team_list, api_token, session)
 
     # calling gather here causes instability. Due to too many calls?
@@ -125,7 +129,7 @@ async def add_team_list_ranks(team_list: TeamList, api_token: str, session: aioh
     return
 
 
-async def add_team_list_list_ranks(team_list_list: TeamListList, api_token: str, session: aiohttp.ClientSession = None):
+async def add_team_list_list_ranks(team_list_list: TeamListList, api_token: str, session=None):
     """
     :description: Calls add team list ranks for each team list in the given team list list obj.
     :param team_list_list: A team list list with a list of team lists.
@@ -139,6 +143,7 @@ async def add_team_list_list_ranks(team_list_list: TeamListList, api_token: str,
         # custom connector to limit parallel connection pool, to avoid crashes
         conn = aiohttp.TCPConnector(limit=20)
         async with aiohttp.ClientSession(connector=conn) as session:
+            session = RateLimiter(session)
             return await add_team_list_list_ranks(team_list_list, api_token, session)
 
     # calling gather here causes instability. Due to too many calls?
@@ -173,3 +178,37 @@ def calc_average_and_max_team_rank(team: Team):
     team.average_rank = Rank(rank_int=average)
     team.max_rank = Rank(rank_int=max_rank)
     return
+
+
+class RateLimiter:
+    # Personal/Test key rate limit
+    rate = 5/6
+    max_tokens = 20.0
+
+    # Production key rate limit
+    # rate = 50
+    # max_tokens = 500
+
+    def __init__(self, session: aiohttp.ClientSession):
+        self.session = session
+        self.tokens = self.max_tokens
+        self.updated_at = time.monotonic()
+
+    async def get(self, *args, **kwargs):
+        await self.wait_for_tokens()
+        return self.session.get(*args, **kwargs)
+
+    async def wait_for_tokens(self):
+        while self.tokens <= 1.0:
+            self.add_new_tokens()
+            # should be shorter and use exponential back-off
+            await asyncio.sleep(1)
+        self.tokens -= 1.0
+
+    def add_new_tokens(self):
+        now = time.monotonic()
+        time_since_update = now - self.updated_at
+        new_tokens = float(time_since_update) * self.rate
+        if self.tokens + new_tokens >= 1.0:
+            self.tokens = min(self.tokens + new_tokens, self.max_tokens)
+            self.updated_at = now
