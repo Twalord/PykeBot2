@@ -75,7 +75,7 @@ async def stalk_toornament_api_tournament(toornament_link: str) -> TeamList:
     return parse_participants(participants, tournament_name)
 
 
-def parse_participants(participants: list, tournament_name: str) -> TeamList:
+def parse_participants(participants: List[dict], tournament_name: str) -> TeamList:
     """
     Parses the given participant list and tournament name to create a TeamList object.
     :param participants: Expects a participant list created from the toornament api.
@@ -95,7 +95,17 @@ def parse_participants(participants: list, tournament_name: str) -> TeamList:
         team_lineup = team_entry["lineup"]
         players = []
         for lineup_entry in team_lineup:
-            player_summoner_name = lineup_entry["custom_fields"]["summoner_name"]
+            custom_fields = lineup_entry["custom_fields"]
+            keys = custom_fields.keys()
+            summoner_name_field = None
+            for key in keys:
+                if "summoner" in key:
+                    summoner_name_field = key
+                    break
+            if summoner_name_field is None:
+                continue
+            player_summoner_name = lineup_entry["custom_fields"][summoner_name_field]
+
             if player_summoner_name is None:
                 continue
             player = Player(player_summoner_name)

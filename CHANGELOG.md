@@ -1,3 +1,7 @@
+# 2.1.1
+23.8.2020
+- Bugfix in toornament_api.py. It now assumes that the custom filed for the summoner name contains the word summoner instead of always being summoner_name. 
+
 # 2.1.0
 3.8.2020
 - Added toornament_api stalker, by providing a Toornament api token, the api may be used which is faster compared to the HTML scraper
