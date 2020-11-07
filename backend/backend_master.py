@@ -11,11 +11,12 @@ from models.data_models import Error, Message, Payload, Team, TeamListList, Team
 from models.query import Query
 from models.errors import TokenLoadingError
 from utils import token_loader
-from backend.stalker import op_gg_rank, prime_league, toornament, summoners_inn, battlefy, toornament_api
+from backend.stalker import op_gg_rank, prime_league, toornament, summoners_inn, battlefy, toornament_api, riot_api_rank
 from models.lookup_tables import prime_league_base_url, prime_league_group_key_words, prime_league_season_key_words, \
     prime_league_team_key_words, toornament_base_url, toornament_tournament_key_words, with_ranks_flag_lookup, \
-    summoners_inn_base_url, summoners_inn_cup_key_words, summoners_inn_team_key_words, battlefy_base_url,\
-    prime_league_use_group_flag_lookup, dont_use_api_flag_lookup, used_toornament_api_flag_lookup
+    summoners_inn_base_url, summoners_inn_cup_key_words, summoners_inn_team_key_words, battlefy_base_url, \
+    prime_league_use_group_flag_lookup, dont_use_api_flag_lookup, used_toornament_api_flag_lookup,\
+    used_riot_api_flag_lookup
 
 logger = logging.getLogger('pb_logger')
 
@@ -98,7 +99,18 @@ async def backend_loop(forward_queue: asyncio.Queue, backend_queue: asyncio.Queu
 
             if ranks:
                 logger.debug(f"Starting rank stalk for query: {query.raw_command}")
-                await call_rank_stalker(payload)
+                # try loading a Riot Api Token
+                found_riot_token = False
+                try:
+                    token_loader.load_token("RiotToken")
+                    found_riot_token = True
+                except TokenLoadingError as e:
+                    logger.info("Failed to load RiotToken, using op.gg instead.")
+                if found_riot_token and len(query.flags.intersection(dont_use_api_flag_lookup)) == 0:
+                    await call_rank_stalker(payload, use_api=True)
+                    query.flags.add(*used_riot_api_flag_lookup)
+                else:
+                    await call_rank_stalker(payload)
                 logger.debug(f"Finished rank stalk for query: {query.raw_command}")
 
             # adds data to db
@@ -237,22 +249,35 @@ def determine_stalker(query: Query):
         return website_type_to_battlefy_stalker.get(website_type)
 
 
-async def call_rank_stalker(payload: Payload):
+async def call_rank_stalker(payload: Payload, use_api=False):
     """
     :description: Checks the payload type and calls the correct rank stalker.
     :param payload: The Payload object returned from stalking. Submitting Error, Message or Player will cause an error.
     :type payload: Payload
+    :param use_api: If set to true, will try to use the Riot api to fetch ranks instead of op.gg.
+    :type use_api: Bool
     :return: None
     :rtype: None
     """
     # determine what the payload is to call the respective op gg rank function
 
+    if use_api:
+        api_token = token_loader.load_token("RiotToken")
     if isinstance(payload, TeamListList):
-        await op_gg_rank.add_team_list_list_ranks(payload)
+        if use_api:
+            await riot_api_rank.add_team_list_list_ranks(payload, api_token)
+        else:
+            await op_gg_rank.add_team_list_list_ranks(payload)
     elif isinstance(payload, TeamList):
-        await op_gg_rank.add_team_list_ranks(payload)
+        if use_api:
+            await riot_api_rank.add_team_list_ranks(payload, api_token)
+        else:
+            await op_gg_rank.add_team_list_ranks(payload)
     elif isinstance(payload, Team):
-        await op_gg_rank.add_team_ranks(payload)
+        if use_api:
+            await riot_api_rank.add_team_ranks(payload, api_token)
+        else:
+            await op_gg_rank.add_team_ranks(payload)
     else:
         logger.error(
             f"Failed to identify payload for rank addition, payload is for some reason of type {type(payload)}")

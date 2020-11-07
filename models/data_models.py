@@ -154,7 +154,7 @@ class Team(Payload):
         if self.average_rank is None:
             return f"__{self.name}__ | {self.multi_link}\n"
         else:
-            return f"__{self.name}__ Ø: {str(self.average_rank)} max: {str(self.max_rank)} | {self.multi_link}\n"
+            return f"__{self.name}__ Ø: *{str(self.average_rank)}* max: *{str(self.max_rank)}* | {self.multi_link}\n"
 
     def discord_extended_str(self):
         # needs to call discord_str for each player

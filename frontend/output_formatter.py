@@ -7,7 +7,8 @@ Responsible for creating the output message from the payload by calling str mess
 import logging
 from models.query import Query
 from models.data_models import Error, Payload, Message, TeamList, Team
-from models.lookup_tables import as_file_flag_lookup, with_ranks_flag_lookup, used_toornament_api_flag_lookup
+from models.lookup_tables import as_file_flag_lookup, with_ranks_flag_lookup, used_toornament_api_flag_lookup, \
+    used_riot_api_flag_lookup
 
 logger = logging.getLogger("pb_logger")
 
@@ -85,6 +86,12 @@ def format_payload(query: Query):
     # Whenever the toornament api is used, this line must be appended to the output
     if len(query.flags.intersection(used_toornament_api_flag_lookup)) >= 1:
         output = f"{output}\nPowered by Toornament https://www.toornament.com"
+
+    # Whenever the riot api is used, this line must be appended to the output
+    if len(query.flags.intersection(used_riot_api_flag_lookup)) >= 1:
+        output = f"{output}\nPykeBot2 isn't endorsed by Riot Games and doesn't reflect the views or opinions of " \
+                 f"Riot Games or anyone officially involved in producing or managing Riot Games properties. \nRiot Games" \
+                 f", and all associated properties are trademarks or registered trademarks of Riot Games, Inc."
 
     query.update_query("frontend", "display", output_message=output)
 
