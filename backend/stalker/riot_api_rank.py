@@ -190,12 +190,12 @@ def calc_average_and_max_team_rank(team: Team):
 
 class RateLimiter:
     # Personal/Test key rate limit
-    rate = 5/6
-    max_tokens = 20.0
+    # rate = 5/6
+    # max_tokens = 20.0
 
     # Production key rate limit
-    # rate = 50
-    # max_tokens = 500
+    rate = 50
+    max_tokens = 500
 
     def __init__(self, session: aiohttp.ClientSession):
         self.session = session
