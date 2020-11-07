@@ -12,8 +12,8 @@ debug_flag = False
 Version number
 TODO: Keep version number up to date!
 """
-version = "2.1.0"
-last_updated = "3.8.2020"
+version = "2.2.3"
+last_updated = "7.11.2020"
 
 """
 lookup tables for commands and flags

@@ -1,6 +1,8 @@
-# 2.1.1
-23.8.2020
-- Bugfix in toornament_api.py. It now assumes that the custom filed for the summoner name contains the word summoner instead of always being summoner_name. 
+# 2.2.3
+7.11.2020
+- Got approval for a production API key
+- Changed rate limits in RateLimiter to the ones for the production key
+- merged Riot API branch into master
 
 # 2.2.2
 4.8.2020
@@ -13,6 +15,10 @@
 # 2.2.0
 4.8.2020
 - Added Riot Api for rank stalking as an alternative to the op gg stalker, however the rate limit of the api is quickly exceeded
+
+# 2.1.1
+23.8.2020
+- Bugfix in toornament_api.py. It now assumes that the custom filed for the summoner name contains the word summoner instead of always being summoner_name. 
 
 # 2.1.0
 3.8.2020
