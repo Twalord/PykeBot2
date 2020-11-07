@@ -39,7 +39,7 @@ async def stalk_player_riot_api(sum_name: str, api_token: str, session=None) -> 
         r_json = await r.json()
 
     if r.status == 429:
-        logger.debug("Rate limit exceeded!")
+        logger.debug(f"Rate limit exceeded! {session.request_counter} Requests made in {time.monotonic() - session.start_time} seconds.")
         return ""
     summoner_id = r_json.get("id", "None")
     if summoner_id == "None":
@@ -49,6 +49,10 @@ async def stalk_player_riot_api(sum_name: str, api_token: str, session=None) -> 
 
     async with await session.get(league_resource_url, headers=headers) as r:
         r_json = await r.json()
+
+    if r.status == 429:
+        logger.debug(f"Rate limit exceeded! {session.request_counter} Requests made in {time.monotonic() - session.start_time} seconds.")
+        return ""
 
     if type(r_json) is dict:
         r_json = [r_json]
@@ -63,6 +67,7 @@ async def stalk_player_riot_api(sum_name: str, api_token: str, session=None) -> 
             rank = league["rank"]
             break
     if tier == "":
+        # logger.debug(f"{sum_name} has no rank. {r_json}")
         return ""
     return f"{tier} {rank}"
 
@@ -194,23 +199,30 @@ class RateLimiter:
     # max_tokens = 20.0
 
     # Production key rate limit
-    rate = 50
-    max_tokens = 500
+    rate = 50  # should be 50
+    max_tokens = 500  # 500
+    # regen_after = 50.0
+
+    request_counter = 0
+    start_time = 0
 
     def __init__(self, session: aiohttp.ClientSession):
         self.session = session
-        self.tokens = self.max_tokens
+        self.tokens = self.rate
         self.updated_at = time.monotonic()
 
     async def get(self, *args, **kwargs):
         await self.wait_for_tokens()
+        if self.request_counter == 0:
+            self.start_time = time.monotonic()
+        self.request_counter += 1
         return self.session.get(*args, **kwargs)
 
     async def wait_for_tokens(self):
         while self.tokens <= 1.0:
             self.add_new_tokens()
             # should be shorter and use exponential back-off
-            await asyncio.sleep(1)
+            await asyncio.sleep(self.regen_after)
         self.tokens -= 1.0
 
     def add_new_tokens(self):
@@ -220,3 +232,12 @@ class RateLimiter:
         if self.tokens + new_tokens >= 1.0:
             self.tokens = min(self.tokens + new_tokens, self.max_tokens)
             self.updated_at = now
+
+
+"""    def add_new_tokens(self):
+        now = time.monotonic()
+        time_since_update = now - self.updated_at
+        if time_since_update > self.regen_after:
+            self.tokens = self.max_tokens
+            self.updated_at = now"""
+

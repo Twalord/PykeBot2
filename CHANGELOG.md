@@ -1,3 +1,8 @@
+# 2.2.4
+7.11.2020
+- Added note about riot api to readme
+- Change to how Riot API rate limit is calculated to avoid exceeding the Rate Limit
+
 # 2.2.3
 7.11.2020
 - Got approval for a production API key

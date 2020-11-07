@@ -36,7 +36,12 @@ Start PykeBot2 via `python main.py` in a terminal.
 ### Optional: Toornament API token
 PykeBot2 supports using the Toornament API instead of the standard HTML scraper.
 For this a valid Toornament API token is required, which officially be acquired over the process described [here](https://developer.toornament.com/v2/overview/get-started).
-The token must be placed in a filed called `ToornamentToken` in the project root, similar to the Discord token.
+The token must be placed in a file called `ToornamentToken` in the project root, similar to the Discord token.
+
+### Optional: Riot API production key
+PykeBot2 supports using the Riot API for Rank stalking instead of the stand HTML op.gg stalker.
+For this a valid Riot API production key is required.
+The API production key must be placed in a filed called file called 'RiotToken' in the project root, similar to the Discord token.
 
 ## How to use
 PykeBot2 can be added to one or multiple Discord server but it also accepts direct messages.
