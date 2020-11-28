@@ -50,7 +50,11 @@ async def stalk_player_riot_api(sum_name: str, api_token: str, session=None) -> 
 
     async with await session.get(league_resource_url, headers=headers) as r:
         r_data = await r.read()
-    r_json = json.loads(r_data)
+    try:
+        r_json = json.loads(r_data)
+    except json.JSONDecodeError:
+        logger.error(f"Decoding failed for {r_data}")
+        return ""
 
     if r.status == 429:
         logger.debug(f"Rate limit exceeded! {session.request_counter} Requests made in {time.monotonic() - session.start_time} seconds.")

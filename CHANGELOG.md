@@ -1,3 +1,7 @@
+# 2.2.7
+28.11.2020
+- Added error handling to decoding error to fix it really this time
+
 # 2.2.6
 28.11.2020
 - Fixed decoding error in riot api
