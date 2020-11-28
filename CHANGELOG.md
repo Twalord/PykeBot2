@@ -1,3 +1,8 @@
+# 2.2.5
+28.11.2020
+- Fixed bug in Riot API RateLimiter
+- Adjusted rate limit
+
 # 2.2.4
 7.11.2020
 - Added note about riot api to readme
