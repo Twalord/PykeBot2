@@ -1,3 +1,7 @@
+# 2.2.6
+28.11.2020
+- Fixed decoding error in riot api
+
 # 2.2.5
 28.11.2020
 - Fixed bug in Riot API RateLimiter

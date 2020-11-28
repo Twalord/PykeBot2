@@ -8,6 +8,7 @@ import asyncio
 import logging
 import aiohttp
 import time
+import json
 from models.data_models import Player, Rank, Team, TeamList, TeamListList
 
 logger = logging.getLogger("pb_logger")
@@ -48,7 +49,8 @@ async def stalk_player_riot_api(sum_name: str, api_token: str, session=None) -> 
     league_resource_url = f"https://euw1.api.riotgames.com/lol/league/v4/entries/by-summoner/{summoner_id}"
 
     async with await session.get(league_resource_url, headers=headers) as r:
-        r_json = await r.json()
+        r_data = await r.read()
+    r_json = json.loads(r_data)
 
     if r.status == 429:
         logger.debug(f"Rate limit exceeded! {session.request_counter} Requests made in {time.monotonic() - session.start_time} seconds.")
