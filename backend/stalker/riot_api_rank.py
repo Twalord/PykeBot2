@@ -41,7 +41,8 @@ async def stalk_player_riot_api(sum_name: str, api_token: str, session=None) -> 
 
     if r.status == 429:
         logger.debug(f"Rate limit exceeded! {session.request_counter} Requests made in {time.monotonic() - session.start_time} seconds.")
-        return ""
+        await asyncio.sleep(60)
+        return await stalk_player_riot_api(sum_name, api_token, session)
     summoner_id = r_json.get("id", "None")
     if summoner_id == "None":
         return ""
@@ -58,7 +59,8 @@ async def stalk_player_riot_api(sum_name: str, api_token: str, session=None) -> 
 
     if r.status == 429:
         logger.debug(f"Rate limit exceeded! {session.request_counter} Requests made in {time.monotonic() - session.start_time} seconds.")
-        return ""
+        await asyncio.sleep(60)
+        return await stalk_player_riot_api(sum_name, api_token, session)
 
     if type(r_json) is dict:
         r_json = [r_json]
