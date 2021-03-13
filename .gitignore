@@ -17,6 +17,9 @@ venv_min/
 # Toornament Token
 /ToornamentToken
 
+# Riot Tokens
+/RiotToken
+
 # generated doc files
 docs/source/generated/
 
