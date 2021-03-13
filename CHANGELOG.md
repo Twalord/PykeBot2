@@ -1,3 +1,7 @@
+# 2.2.8
+13.03.2021
+- Changed Riot API rank stalker to retry after a delay, if it failed a request due to hitting the rate limit
+
 # 2.2.7
 28.11.2020
 - Added error handling to decoding error to fix it really this time
