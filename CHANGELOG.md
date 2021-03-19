@@ -1,3 +1,8 @@
+# 2.2.9
+19.03.2021
+- Change in Toornament api stalker to use player name if summoner name is not found
+- Reduced wait time in riot API rank stalker for new tokens to generate
+
 # 2.2.8
 13.03.2021
 - Changed Riot API rank stalker to retry after a delay, if it failed a request due to hitting the rate limit
