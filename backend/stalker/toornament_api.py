@@ -103,8 +103,10 @@ def parse_participants(participants: List[dict], tournament_name: str) -> TeamLi
                     summoner_name_field = key
                     break
             if summoner_name_field is None:
-                continue
-            player_summoner_name = lineup_entry["custom_fields"][summoner_name_field]
+                # if summoner_name_field is private or not set, try using the name
+                player_summoner_name = lineup_entry['name']
+            else:
+                player_summoner_name = lineup_entry["custom_fields"][summoner_name_field]
 
             if player_summoner_name is None:
                 continue
