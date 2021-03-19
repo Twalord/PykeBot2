@@ -208,8 +208,8 @@ class RateLimiter:
 
     # Production key rate limit
     rate = 50  # should be 50
-    max_tokens = 450  # 500
-    regen_after = 65.0
+    max_tokens = 500  # 500
+    regen_after = 60.0
 
     request_counter = 0
     start_time = 0
