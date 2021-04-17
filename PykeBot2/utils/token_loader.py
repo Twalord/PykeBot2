@@ -9,12 +9,17 @@ from logging import getLogger
 import pathlib
 import os
 
-from models.errors import TokenLoadingError
+from PykeBot2.models.errors import TokenLoadingError
 
-logger = getLogger('pb_logger')
+logger = getLogger("pb_logger")
 
 
-def load_token(name: str, try_env: bool = True, hide_token: bool = True, path_to_token: pathlib.Path = None) -> str:
+def load_token(
+    name: str,
+    try_env: bool = True,
+    hide_token: bool = True,
+    path_to_token: pathlib.Path = None,
+) -> str:
     """
     :description: Loads the specified token, trying either the given path or the cwd and if set the env variables
     :param name: Name of the token, as in the file_name or the name of the env variable
@@ -77,6 +82,8 @@ def load_token(name: str, try_env: bool = True, hide_token: bool = True, path_to
     else:
         # if the token couldn't be loaded, a TokenLoadingError is raised
         logger.error(f"Failed to load token {name}")
-        logger.warning(f"Token needs to be placed in {total_path_to_token} or set as an environmental variable of the "
-                       f"same name")
+        logger.warning(
+            f"Token needs to be placed in {total_path_to_token} or set as an environmental variable of the "
+            f"same name"
+        )
         raise TokenLoadingError(f"Failed to load token {name}")

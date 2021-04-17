@@ -1,7 +1,7 @@
-from utils import token_loader
+from PykeBot2.utils import token_loader
 import pathlib
 import pytest
-from models.errors import TokenLoadingError
+from PykeBot2.models.errors import TokenLoadingError
 import os
 
 

@@ -1,4 +1,4 @@
-from utils import pb_logger
+from PykeBot2.utils import pb_logger
 import pathlib
 import pytest
 import logging

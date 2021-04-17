@@ -1,6 +1,5 @@
-from event_loop_master import query_forwarder
 import asyncio
-from models.query import Query
+from PykeBot2.models.query import Query
 
 # TODO this test is outdated and needs to be removed or updated
 

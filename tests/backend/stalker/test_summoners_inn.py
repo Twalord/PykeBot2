@@ -14,7 +14,7 @@ recreate_test_data = False
 
 @pytest.mark.asyncio
 async def test_positive_stalk_summoners_inn_cup():
-    from backend.stalker import summoners_inn
+    from PykeBot2.backend.stalker import summoners_inn
 
     url = "https://www.summoners-inn.de/de/leagues/hausarrest/1492-playoffs"
 
@@ -34,7 +34,7 @@ async def test_positive_stalk_summoners_inn_cup():
 
 @pytest.mark.asyncio
 async def test_positive_stalk_summoners_inn_team():
-    from backend.stalker import prime_league, summoners_inn
+    from PykeBot2.backend.stalker import prime_league
 
     url = "https://www.summoners-inn.de/de/leagues/hausarrest/1492-playoffs/teams/115966-esug-ultimate-five-feeders"
 

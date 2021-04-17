@@ -14,18 +14,19 @@ which display further information on the Players and the Rank if possible.
 from dataclasses import dataclass
 from typing import List
 import logging
-from models.lookup_tables import rank_str_to_int_lookup, rank_int_to_str_lookup
-from models.errors import PayloadCreationError
+from PykeBot2.models.lookup_tables import rank_str_to_int_lookup, rank_int_to_str_lookup
+from PykeBot2.models.errors import PayloadCreationError
 
-logger = logging.getLogger('pb_logger')
+logger = logging.getLogger("pb_logger")
 
 
 @dataclass
 class Payload:
-
     def __init__(self):
-        logger.error("Payload creation error, something attempted to directly create a payload object, "
-                     "only subclasses may be created.")
+        logger.error(
+            "Payload creation error, something attempted to directly create a payload object, "
+            "only subclasses may be created."
+        )
         raise PayloadCreationError
 
     def __str__(self):
@@ -46,6 +47,7 @@ class Rank:
     """
     Saves a player rank as string and integer
     """
+
     rank_string = "Unknown"
     rank_int = -1
 
@@ -72,6 +74,7 @@ class Player(Payload):
     """
     Saves information on a single league account
     """
+
     opgg: str
     summoner_name: str
     rank: Rank = Rank()
@@ -111,6 +114,7 @@ class Team(Payload):
     """
     Saves information for a team of league players
     """
+
     name: str
     players: List[Player]
     multi_link: str
@@ -143,8 +147,7 @@ class Team(Payload):
 
     def extended_str(self):
         out = str(self)
-        sorted_players = sorted(self.players,
-                                key=lambda pl: pl.summoner_name)
+        sorted_players = sorted(self.players, key=lambda pl: pl.summoner_name)
         for player in sorted_players:
             out += str(player) + " | "
         return out[:-3] + "\n"
@@ -159,8 +162,7 @@ class Team(Payload):
     def discord_extended_str(self):
         # needs to call discord_str for each player
         out = self.discord_str()
-        sorted_players = sorted(self.players,
-                                key=lambda pl: pl.summoner_name)
+        sorted_players = sorted(self.players, key=lambda pl: pl.summoner_name)
         for player in sorted_players:
             out += player.discord_str() + " | "
         return out[:-3] + "\n"
@@ -171,6 +173,7 @@ class TeamList(Payload):
     """
     Saves a list of teams and the name of the list
     """
+
     name: str
     teams: List[Team]
 
@@ -189,7 +192,9 @@ class TeamList(Payload):
         out = f"{self.name} \n\n"
         ranked_teams = [team for team in self.teams if team.average_rank is not None]
         unranked_teams = [team for team in self.teams if team.average_rank is None]
-        sorted_ranked_teams = sorted(ranked_teams, key=lambda t: t.average_rank.rank_int, reverse=True)
+        sorted_ranked_teams = sorted(
+            ranked_teams, key=lambda t: t.average_rank.rank_int, reverse=True
+        )
         sorted_unranked_teams = sorted(unranked_teams, key=lambda t: t.name)
         for team in sorted_ranked_teams:
             out += team.extended_str() + "\n"
@@ -208,7 +213,9 @@ class TeamList(Payload):
         out = f"__**{self.name}**__ \n"
         ranked_teams = [team for team in self.teams if team.average_rank is not None]
         unranked_teams = [team for team in self.teams if team.average_rank is None]
-        sorted_teams = sorted(ranked_teams, key=lambda t: t.average_rank.rank_int, reverse=True)
+        sorted_teams = sorted(
+            ranked_teams, key=lambda t: t.average_rank.rank_int, reverse=True
+        )
         for team in sorted_teams:
             out += team.discord_extended_str() + "\n"
         for team in unranked_teams:
@@ -222,6 +229,7 @@ class TeamListList(Payload):
     """
     Saves a list of TeamList objects
     """
+
     team_lists: List[TeamList]
 
     def __init__(self, team_lists):

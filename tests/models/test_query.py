@@ -1,4 +1,4 @@
-from models.query import Query
+from PykeBot2.models.query import Query
 
 
 def test_query():

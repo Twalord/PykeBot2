@@ -9,7 +9,7 @@ from frontend import discord_interface, frontend_master
 from backend import backend_master
 from models.lookup_tables import forward_to_lookup
 
-logger = getLogger('pb_logger')
+logger = getLogger("pb_logger")
 
 
 async def sample_worker(num: int):
@@ -39,7 +39,9 @@ async def dump_que(queue: asyncio.Queue):
         queue.task_done()
 
 
-async def query_forwarder(forward_queue: asyncio.Queue, sub_module_queues: {str: asyncio.Queue}):
+async def query_forwarder(
+    forward_queue: asyncio.Queue, sub_module_queues: {str: asyncio.Queue}
+):
     """
     :description: Coroutine that manages the forward_queue and reads the forward_to field of incoming queries.
     Based on the value of the field the query is submitted to the next Queue.
@@ -80,17 +82,25 @@ def run_main_loop():
         backend_master_queue = asyncio.Queue()
 
         # register internal queues
-        sub_module_queues = {"discord": discord_out_queue,
-                             "frontend": frontend_master_queue,
-                             "backend": backend_master_queue}
+        sub_module_queues = {
+            "discord": discord_out_queue,
+            "frontend": frontend_master_queue,
+            "backend": backend_master_queue,
+        }
 
         # start query forwarder
         asyncio.ensure_future(query_forwarder(forward_queue, sub_module_queues))
 
         # start sub modules, each sub module requires its input queue and the forward queue
-        asyncio.ensure_future(discord_interface.run_discord_bot_loop(forward_queue, discord_out_queue))
-        asyncio.ensure_future(frontend_master.frontend_loop(forward_queue, frontend_master_queue))
-        asyncio.ensure_future(backend_master.backend_loop(forward_queue, backend_master_queue))
+        asyncio.ensure_future(
+            discord_interface.run_discord_bot_loop(forward_queue, discord_out_queue)
+        )
+        asyncio.ensure_future(
+            frontend_master.frontend_loop(forward_queue, frontend_master_queue)
+        )
+        asyncio.ensure_future(
+            backend_master.backend_loop(forward_queue, backend_master_queue)
+        )
 
         loop.run_forever()
     except KeyboardInterrupt:

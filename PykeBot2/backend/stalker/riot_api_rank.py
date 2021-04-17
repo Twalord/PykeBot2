@@ -9,7 +9,7 @@ import logging
 import aiohttp
 import time
 import json
-from models.data_models import Player, Rank, Team, TeamList, TeamListList
+from PykeBot2.models.data_models import Player, Rank, Team, TeamList, TeamListList
 
 logger = logging.getLogger("pb_logger")
 
@@ -32,7 +32,9 @@ async def stalk_player_riot_api(sum_name: str, api_token: str, session=None) -> 
             session = RateLimiter(session)
             return await stalk_player_riot_api(sum_name, api_token, session)
 
-    summoner_resource_url = f"https://euw1.api.riotgames.com/lol/summoner/v4/summoners/by-name/{sum_name}"
+    summoner_resource_url = (
+        f"https://euw1.api.riotgames.com/lol/summoner/v4/summoners/by-name/{sum_name}"
+    )
 
     headers = {"X-Riot-Token": api_token}
 
@@ -40,7 +42,9 @@ async def stalk_player_riot_api(sum_name: str, api_token: str, session=None) -> 
         r_json = await r.json()
 
     if r.status == 429:
-        logger.debug(f"Rate limit exceeded! {session.request_counter} Requests made in {time.monotonic() - session.start_time} seconds.")
+        logger.debug(
+            f"Rate limit exceeded! {session.request_counter} Requests made in {time.monotonic() - session.start_time} seconds."
+        )
         await asyncio.sleep(60)
         return await stalk_player_riot_api(sum_name, api_token, session)
     summoner_id = r_json.get("id", "None")
@@ -58,7 +62,9 @@ async def stalk_player_riot_api(sum_name: str, api_token: str, session=None) -> 
         return ""
 
     if r.status == 429:
-        logger.debug(f"Rate limit exceeded! {session.request_counter} Requests made in {time.monotonic() - session.start_time} seconds.")
+        logger.debug(
+            f"Rate limit exceeded! {session.request_counter} Requests made in {time.monotonic() - session.start_time} seconds."
+        )
         await asyncio.sleep(60)
         return await stalk_player_riot_api(sum_name, api_token, session)
 
@@ -97,7 +103,11 @@ async def add_player_rank(player: Player, api_token: str, session=None):
             session = RateLimiter(session)
             return await add_player_rank(player, api_token, session)
 
-    player.rank = Rank(rank_string=await stalk_player_riot_api(player.summoner_name, api_token, session))
+    player.rank = Rank(
+        rank_string=await stalk_player_riot_api(
+            player.summoner_name, api_token, session
+        )
+    )
     return
 
 
@@ -118,7 +128,9 @@ async def add_team_ranks(team: Team, api_token: str, session=None):
             session = RateLimiter(session)
             return await add_team_ranks(team, api_token, session)
 
-    await asyncio.gather(*(add_player_rank(player, api_token, session) for player in team.players))
+    await asyncio.gather(
+        *(add_player_rank(player, api_token, session) for player in team.players)
+    )
 
     calc_average_and_max_team_rank(team)
     return
@@ -148,7 +160,9 @@ async def add_team_list_ranks(team_list: TeamList, api_token: str, session=None)
     return
 
 
-async def add_team_list_list_ranks(team_list_list: TeamListList, api_token: str, session=None):
+async def add_team_list_list_ranks(
+    team_list_list: TeamListList, api_token: str, session=None
+):
     """
     :description: Calls add team list ranks for each team list in the given team list list obj.
     :param team_list_list: A team list list with a list of team lists.
@@ -248,4 +262,3 @@ class RateLimiter:
         if time_since_update > self.regen_after:
             self.tokens = self.max_tokens
             self.updated_at = now"""
-

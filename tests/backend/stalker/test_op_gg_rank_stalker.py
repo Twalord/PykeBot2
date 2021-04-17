@@ -3,8 +3,8 @@ import pytest
 
 @pytest.mark.asyncio
 async def test_positive_stalk_player_op_gg():
-    from backend.stalker import op_gg_rank
-    from models.data_models import Player, Rank
+    from PykeBot2.backend.stalker import op_gg_rank
+    from PykeBot2.models.data_models import Player, Rank
 
     test_player = Player("UFF NiceToMeetMe")
 
@@ -16,8 +16,8 @@ async def test_positive_stalk_player_op_gg():
 
 @pytest.mark.asyncio
 async def test_positive_stalk_player_riot_api():
-    from backend.stalker import riot_api_rank
-    from models.data_models import Player, Rank
+    from PykeBot2.backend.stalker import riot_api_rank
+    from PykeBot2.models.data_models import Player, Rank
 
     test_player = Player("UFF NiceToMeetMe")
 

@@ -8,12 +8,12 @@ from discord.ext import commands
 import datetime
 from discord import Message, File, Game, __version__
 
-from utils.token_loader import load_token
-from models.query import Query
-from models.lookup_tables import as_file_flag_lookup
-from models.data_models import Error
+from PykeBot2.utils.token_loader import load_token
+from PykeBot2.models.query import Query
+from PykeBot2.models.lookup_tables import as_file_flag_lookup
+from PykeBot2.models.data_models import Error
 
-logger = logging.getLogger('pb_logger')
+logger = logging.getLogger("pb_logger")
 prefix = ".pb"
 
 
@@ -22,6 +22,7 @@ class PykeBot(commands.Bot):
     :description: Overwrites the standard Discord Bot to add fields for the incoming and outgoing Queues as well as
     background tasks. The prefix for co
     """
+
     forward_queue: asyncio.Queue
     output_queue: asyncio.Queue
 
@@ -37,7 +38,9 @@ class PykeBot(commands.Bot):
             query = await self.output_queue.get()
 
             # check if send as file, in case of error always skip file flag
-            if len(as_file_flag_lookup.intersection(query.flags)) >= 1 and not isinstance(query.payload, Error):
+            if len(
+                as_file_flag_lookup.intersection(query.flags)
+            ) >= 1 and not isinstance(query.payload, Error):
 
                 # prepare file creation
                 title = query.output_message.split("\n", 1)[0]
@@ -45,7 +48,9 @@ class PykeBot(commands.Bot):
 
                 # create discord file and send it
                 out_file = File(mem_file, filename=(title + ".txt"))
-                await query.discord_channel.send(f"Finished stalking {title}.", file=out_file)
+                await query.discord_channel.send(
+                    f"Finished stalking {title}.", file=out_file
+                )
 
             # else chunk message
             else:
@@ -71,7 +76,9 @@ class PykeBot(commands.Bot):
 pb = PykeBot()
 
 
-async def run_discord_bot_loop(forward_queue: asyncio.Queue, output_queue: asyncio.Queue):
+async def run_discord_bot_loop(
+    forward_queue: asyncio.Queue, output_queue: asyncio.Queue
+):
     """
     :description: Main Coroutine for the Discord Bot interface.
     Handles the final setup steps and starts the main Coroutine for Discord Bot.
@@ -97,11 +104,13 @@ async def on_ready():
     :return: None
     :rtype: None
     """
-    logger.info(f'Logged in as {pb.user.name}')
-    logger.info(f'with id {pb.user.id}')
+    logger.info(f"Logged in as {pb.user.name}")
+    logger.info(f"with id {pb.user.id}")
     logger.info("PykeBot2 is ready!")
 
-    await pb.change_presence(activity=Game(name=".pb help", start=datetime.datetime.now()))
+    await pb.change_presence(
+        activity=Game(name=".pb help", start=datetime.datetime.now())
+    )
 
 
 @pb.event
@@ -116,7 +125,7 @@ async def on_message(message: Message):
     :rtype: None
     """
     if message.content.startswith(prefix) and pb.user.id != message.author.id:
-        if message.content.startswith(f'{prefix} ping'):
+        if message.content.startswith(f"{prefix} ping"):
             await message.channel.send("Pong")
         else:
             initiate_query(message)
@@ -131,7 +140,13 @@ def initiate_query(message: Message):
     :rtype: None
     """
     logger.debug(f"Received query: {str(message.content)}")
-    query = Query("discord", "frontend", "interpret", raw_command=message.content, discord_channel=message.channel)
+    query = Query(
+        "discord",
+        "frontend",
+        "interpret",
+        raw_command=message.content,
+        discord_channel=message.channel,
+    )
     pb.forward_queue.put_nowait(query)
 
 

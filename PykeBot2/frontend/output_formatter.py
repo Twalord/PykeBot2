@@ -5,10 +5,14 @@ Responsible for creating the output message from the payload by calling str mess
 """
 
 import logging
-from models.query import Query
-from models.data_models import Error, Payload, Message, TeamList, Team
-from models.lookup_tables import as_file_flag_lookup, with_ranks_flag_lookup, used_toornament_api_flag_lookup, \
-    used_riot_api_flag_lookup
+from PykeBot2.models.query import Query
+from PykeBot2.models.data_models import Error, Payload, Message, TeamList, Team
+from PykeBot2.models.lookup_tables import (
+    as_file_flag_lookup,
+    with_ranks_flag_lookup,
+    used_toornament_api_flag_lookup,
+    used_riot_api_flag_lookup,
+)
 
 logger = logging.getLogger("pb_logger")
 
@@ -40,8 +44,10 @@ def format_payload(query: Query):
     # additional case for valid TeamList payloads with 0 teams
     if isinstance(query.payload, TeamList):
         if len(query.payload.teams) == 0:
-            error_message = f"Command {str(query)} returned no teams.\n" \
-                            f"Are there even valid teams in the given tournament?"
+            error_message = (
+                f"Command {str(query)} returned no teams.\n"
+                f"Are there even valid teams in the given tournament?"
+            )
             logger.error(error_message)
             create_error(query, error_message)
             return
@@ -49,8 +55,10 @@ def format_payload(query: Query):
     # additional case for valid Team payloads with 0 players
     if isinstance(query.payload, Team):
         if len(query.payload.players) == 0:
-            error_message = f"Command {str(query)} returned no players.\n" \
-                            f"Are there even valid players in the given team?"
+            error_message = (
+                f"Command {str(query)} returned no players.\n"
+                f"Are there even valid players in the given team?"
+            )
             logger.error(error_message)
             create_error(query, error_message)
 
@@ -89,9 +97,11 @@ def format_payload(query: Query):
 
     # Whenever the riot api is used, this line must be appended to the output
     if len(query.flags.intersection(used_riot_api_flag_lookup)) >= 1:
-        output = f"{output}\nPykeBot2 isn't endorsed by Riot Games and doesn't reflect the views or opinions of " \
-                 f"Riot Games or anyone officially involved in producing or managing Riot Games properties. \nRiot Games" \
-                 f", and all associated properties are trademarks or registered trademarks of Riot Games, Inc."
+        output = (
+            f"{output}\nPykeBot2 isn't endorsed by Riot Games and doesn't reflect the views or opinions of "
+            f"Riot Games or anyone officially involved in producing or managing Riot Games properties. \nRiot Games"
+            f", and all associated properties are trademarks or registered trademarks of Riot Games, Inc."
+        )
 
     query.update_query("frontend", "display", output_message=output)
 

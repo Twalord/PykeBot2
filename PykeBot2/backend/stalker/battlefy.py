@@ -6,12 +6,13 @@ Uses undocumented Battlefy API to scrape tournament participants.
 
 import logging
 import aiohttp
-from models.data_models import TeamList, Team, Player, Rank
+from PykeBot2.models.data_models import TeamList, Team, Player
 import bs4
 import json
+
 # from backend.stalker.op_gg_rank import calc_average_and_max_team_rank
 
-logger = logging.getLogger('pb_logger')
+logger = logging.getLogger("pb_logger")
 
 
 async def stalk_battlefy_tournament(battlefy_url: str):
@@ -29,7 +30,9 @@ async def stalk_battlefy_tournament(battlefy_url: str):
     tournament_id = battlefy_url_split[5]
 
     # create link for http request by inserting the tournament id
-    tournament_api_url = f"https://dtmwra1jsgyb0.cloudfront.net/tournaments/{tournament_id}/teams?"
+    tournament_api_url = (
+        f"https://dtmwra1jsgyb0.cloudfront.net/tournaments/{tournament_id}/teams?"
+    )
 
     # make the request
     async with aiohttp.ClientSession() as session:

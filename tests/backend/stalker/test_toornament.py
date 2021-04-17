@@ -8,8 +8,8 @@ recreate_test_data = False
 
 @pytest.mark.asyncio
 async def test_positive_stalk_toornament_tournament():
-    from backend.stalker import toornament
-    from models.data_models import TeamList
+    from PykeBot2.backend.stalker import toornament
+    from PykeBot2.models.data_models import TeamList
 
     url = "https://www.toornament.com/en_US/tournaments/2324026559405285376"
 
@@ -32,8 +32,8 @@ async def test_positive_stalk_toornament_tournament():
 
 @pytest.mark.asyncio
 async def test_positive_stalk_toornament_api_tournament():
-    from backend.stalker import toornament_api
-    from models.data_models import TeamList
+    from PykeBot2.backend.stalker import toornament_api
+    from PykeBot2.models.data_models import TeamList
 
     url = "https://www.toornament.com/en_US/tournaments/2324026559405285376"
 
@@ -56,8 +56,8 @@ async def test_positive_stalk_toornament_api_tournament():
 
 @pytest.mark.asyncio
 async def test_positive_stalk_toornament_team():
-    from backend.stalker import toornament
-    from models.data_models import Team
+    from PykeBot2.backend.stalker import toornament
+    from PykeBot2.models.data_models import Team
 
     url = "https://www.toornament.com/en_US/tournaments/2324026559405285376/participants/2430790421496733696/"
 
@@ -80,8 +80,8 @@ async def test_positive_stalk_toornament_team():
 
 @pytest.mark.asyncio
 async def test_broken_toornament_link_stalk_toornament_tournament():
-    from backend.stalker import toornament
-    from models.errors import NotFoundResponseError
+    from PykeBot2.backend.stalker import toornament
+    from PykeBot2.models.errors import NotFoundResponseError
 
     broken_url = "https://www.toornament.com/tournaments/2324076559805285376/information"
 
@@ -91,8 +91,8 @@ async def test_broken_toornament_link_stalk_toornament_tournament():
 
 @pytest.mark.asyncio
 async def test_broken_toornament_team_link_stalk_toornament_team():
-    from backend.stalker import toornament
-    from models.errors import NotFoundResponseError
+    from PykeBot2.backend.stalker import toornament
+    from PykeBot2.models.errors import NotFoundResponseError
 
     broken_url = "https://www.toornament.com/en_US/tournaments/2324026559405285376/participants/2430790231446233696/"
 
@@ -102,7 +102,7 @@ async def test_broken_toornament_team_link_stalk_toornament_team():
 
 @pytest.mark.asyncio
 async def test_broken_link_stalk_toornament_tournament():
-    from backend.stalker import toornament
+    from PykeBot2.backend.stalker import toornament
     from aiohttp import ClientConnectorError
 
     unreachable_url = "https://www.com/"
@@ -113,7 +113,7 @@ async def test_broken_link_stalk_toornament_tournament():
 
 @pytest.mark.asyncio
 async def test_broken_link_stalk_toornament_team():
-    from backend.stalker import toornament
+    from PykeBot2.backend.stalker import toornament
     from aiohttp import ClientConnectorError
 
     unreachable_url = "https://www.com/"

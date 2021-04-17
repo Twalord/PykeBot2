@@ -14,8 +14,14 @@ import pathlib
 import time
 
 
-def setup_logger(logger_name: str = 'pb_logger', console_level=logging.INFO, log_file_level=logging.DEBUG,
-                 logs_to_keep: int = 20, create_log_files: bool = True, path_to_logs: pathlib.Path = None) -> None:
+def setup_logger(
+    logger_name: str = "pb_logger",
+    console_level=logging.INFO,
+    log_file_level=logging.DEBUG,
+    logs_to_keep: int = 20,
+    create_log_files: bool = True,
+    path_to_logs: pathlib.Path = None,
+) -> None:
     """
     :description: Sets up a logger with formatting, log file creation, settable console and log file logging levels as well as automatic deletion of old log files.
     :param logger_name: Name of the logger profile, standard is pb_logger, this should not be changed except for testing
@@ -46,15 +52,23 @@ def setup_logger(logger_name: str = 'pb_logger', console_level=logging.INFO, log
         # assert preconditions
         assert path_to_logs.exists()
         assert path_to_logs.is_dir()
-        assert len(list(path_to_logs.glob('*.log'))) > 0
+        assert len(list(path_to_logs.glob("*.log"))) > 0
 
         # find oldest log
-        mtime, file_path = min((f.stat().st_mtime, f) for f in path_to_logs.glob('*.log'))
+        mtime, file_path = min(
+            (f.stat().st_mtime, f) for f in path_to_logs.glob("*.log")
+        )
         pathlib.Path.unlink(file_path)
         return
 
     # assert preconditions
-    logging_levels = [logging.CRITICAL, logging.ERROR, logging.WARNING, logging.INFO, logging.DEBUG]
+    logging_levels = [
+        logging.CRITICAL,
+        logging.ERROR,
+        logging.WARNING,
+        logging.INFO,
+        logging.DEBUG,
+    ]
     assert console_level in logging_levels
     assert log_file_level in logging_levels
     assert isinstance(logs_to_keep, int)
@@ -64,7 +78,9 @@ def setup_logger(logger_name: str = 'pb_logger', console_level=logging.INFO, log
     if path_to_logs is None:
         path_to_logs = pathlib.Path.cwd() / "logs"
 
-    assert len(logging.getLogger(logger_name).handlers) == 0, f"Logger {logger_name} already has the handler: {logging.getLogger(logger_name).handlers} "
+    assert (
+        len(logging.getLogger(logger_name).handlers) == 0
+    ), f"Logger {logger_name} already has the handler: {logging.getLogger(logger_name).handlers} "
 
     # create logger
     pb_logger = logging.getLogger(logger_name)
@@ -79,7 +95,7 @@ def setup_logger(logger_name: str = 'pb_logger', console_level=logging.INFO, log
 
             # check if old logs need to be deleted
             if not logs_to_keep < 0:
-                while len(list((path_to_logs.glob('*.log')))) > logs_to_keep:
+                while len(list((path_to_logs.glob("*.log")))) > logs_to_keep:
                     delete_oldest_log(path_to_logs)
 
             # create file handler
@@ -95,7 +111,7 @@ def setup_logger(logger_name: str = 'pb_logger', console_level=logging.INFO, log
     ch.setLevel(console_level)
 
     # create formatter
-    formatter = logging.Formatter('%(asctime)s - %(levelname)-8s - %(message)s')
+    formatter = logging.Formatter("%(asctime)s - %(levelname)-8s - %(message)s")
     if create_log_files and fh_did_not_fail:
         fh.setFormatter(formatter)
     ch.setFormatter(formatter)
@@ -108,4 +124,6 @@ def setup_logger(logger_name: str = 'pb_logger', console_level=logging.INFO, log
     pb_logger.info(f"Finished setting up {logger_name} logger")
 
     if not fh_did_not_fail:
-        pb_logger.warning("Logger File handler failed due to missing permissions, no log file will be created")
+        pb_logger.warning(
+            "Logger File handler failed due to missing permissions, no log file will be created"
+        )

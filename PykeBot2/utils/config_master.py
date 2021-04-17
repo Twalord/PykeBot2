@@ -1,7 +1,7 @@
 import configparser
 from logging import getLogger
 
-logger = getLogger('pb_logger')
+logger = getLogger("pb_logger")
 
 
 def initialize_config_parser():

@@ -9,7 +9,7 @@ import asyncio
 import logging
 import bs4
 import aiohttp
-from models.data_models import Player, Rank, Team, TeamList, TeamListList
+from PykeBot2.models.data_models import Player, Rank, Team, TeamList, TeamListList
 
 logger = logging.getLogger("pb_logger")
 
@@ -39,9 +39,9 @@ async def stalk_player_op_gg(sum_name: str, session: aiohttp.ClientSession = Non
     soup = bs4.BeautifulSoup(page, features="html.parser")
 
     # to remove leading and trailing /n and /t
-    elo = soup.find('div', class_="TierRank")
+    elo = soup.find("div", class_="TierRank")
     if elo is not None:
-        return ' '.join(elo.text.split()).lower()
+        return " ".join(elo.text.split()).lower()
     else:
         return "Unknown"
 
@@ -60,7 +60,9 @@ async def add_player_rank(player: Player, session: aiohttp.ClientSession = None)
         async with aiohttp.ClientSession() as session:
             return await add_player_rank(player, session)
 
-    player.rank = Rank(rank_string=await stalk_player_op_gg(player.summoner_name, session))
+    player.rank = Rank(
+        rank_string=await stalk_player_op_gg(player.summoner_name, session)
+    )
     return
 
 
@@ -84,7 +86,9 @@ async def add_team_ranks(team: Team, session: aiohttp.ClientSession = None):
     return
 
 
-async def add_team_list_ranks(team_list: TeamList, session: aiohttp.ClientSession = None):
+async def add_team_list_ranks(
+    team_list: TeamList, session: aiohttp.ClientSession = None
+):
     """
     :description: Calls add team ranks for each team in the given team list obj.
     :param team_list: A team list with a list of teams.
@@ -105,7 +109,9 @@ async def add_team_list_ranks(team_list: TeamList, session: aiohttp.ClientSessio
     return
 
 
-async def add_team_list_list_ranks(team_list_list: TeamListList, session: aiohttp.ClientSession = None):
+async def add_team_list_list_ranks(
+    team_list_list: TeamListList, session: aiohttp.ClientSession = None
+):
     """
     :description: Calls add team list ranks for each team list in the given team list list obj.
     :param team_list_list: A team list list with a list of team lists.

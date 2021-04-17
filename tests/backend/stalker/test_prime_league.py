@@ -14,9 +14,9 @@ recreate_test_data = False
 
 @pytest.mark.asyncio
 async def test_positive_stalk_prime_league_season():
-    from backend.stalker import prime_league
-    from models.data_models import TeamListList, TeamList, Team, Player
-    from backend.stalker.op_gg_rank import add_team_list_list_ranks
+    from PykeBot2.backend.stalker import prime_league
+    from PykeBot2.models.data_models import TeamListList, TeamList, Team, Player
+    from PykeBot2.backend.stalker.op_gg_rank import add_team_list_list_ranks
 
     url = "https://www.primeleague.gg/de/leagues/prm/1457-spring-split-2020"
 
@@ -61,8 +61,8 @@ async def test_positive_stalk_prime_league_season():
 
 @pytest.mark.asyncio
 async def test_positive_stalk_prime_league_group():
-    from backend.stalker import prime_league
-    from backend.stalker.op_gg_rank import add_team_list_ranks
+    from PykeBot2.backend.stalker import prime_league
+    from PykeBot2.backend.stalker.op_gg_rank import add_team_list_ranks
 
     url = "https://www.primeleague.gg/de/leagues/prm/1457-spring-split-2020/group/509-gruppenphase/5498-division-2-1"
 
@@ -97,8 +97,8 @@ async def test_positive_stalk_prime_league_group():
 
 @pytest.mark.asyncio
 async def test_positive_stalk_prime_league_team():
-    from backend.stalker import prime_league
-    from backend.stalker.op_gg_rank import add_team_ranks
+    from PykeBot2.backend.stalker import prime_league
+    from PykeBot2.backend.stalker.op_gg_rank import add_team_ranks
 
     url = "https://www.primeleague.gg/de/leagues/teams/90248-esug-ultimate-five-feeders"
 

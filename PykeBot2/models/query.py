@@ -9,12 +9,16 @@ but in some cases additional Queries carrying Messages might be created.
 from dataclasses import dataclass
 import logging
 from discord import Message
-from models.data_models import Payload
-from models.lookup_tables import next_step_lookup, forward_to_lookup, debug_flag
-from models.errors import InvalidForwardToError, InvalidNextStepError
+from PykeBot2.models.data_models import Payload
+from PykeBot2.models.lookup_tables import (
+    next_step_lookup,
+    forward_to_lookup,
+    debug_flag,
+)
+from PykeBot2.models.errors import InvalidForwardToError, InvalidNextStepError
 from typing import Set
 
-logger = logging.getLogger('pb_logger')
+logger = logging.getLogger("pb_logger")
 
 
 @dataclass
@@ -24,6 +28,7 @@ class Query:
     Should mainly be created by ingoing interfaces.
     While processing the query the fields should be further filled out and updated using update query function.
     """
+
     raw_command: str
     context_type: str
     discord_channel: Message.channel
@@ -34,9 +39,18 @@ class Query:
     payload: Payload
     next_step: str
 
-    def __init__(self, context_type: str, forward_to: str, next_step: str, raw_command: str = "",
-                 discord_channel: Message.channel = None, data: str = "", output_message: str = "",
-                 flags: Set[str] = None, payload: Payload = None):
+    def __init__(
+        self,
+        context_type: str,
+        forward_to: str,
+        next_step: str,
+        raw_command: str = "",
+        discord_channel: Message.channel = None,
+        data: str = "",
+        output_message: str = "",
+        flags: Set[str] = None,
+        payload: Payload = None,
+    ):
         """
         :description: For new Query Objects its assumed they originate from some interface
         and should be forwarded to the frontend.
@@ -62,11 +76,15 @@ class Query:
         """
 
         if forward_to not in forward_to_lookup:
-            logger.error(f"Failed to create query as forward_to could not be matched: {forward_to}")
+            logger.error(
+                f"Failed to create query as forward_to could not be matched: {forward_to}"
+            )
             raise InvalidForwardToError
 
         if next_step not in next_step_lookup:
-            logger.error(f"Failed to create query as next_step could not be matched: {next_step}")
+            logger.error(
+                f"Failed to create query as next_step could not be matched: {next_step}"
+            )
             raise InvalidNextStepError
 
         if flags is None:
@@ -101,7 +119,15 @@ class Query:
             out = f"'{self.raw_command}'"
         return out
 
-    def update_query(self, forward_to: str, next_step: str, data: str = None, flags: Set[str] = None, output_message: str = None, payload: Payload = None):
+    def update_query(
+        self,
+        forward_to: str,
+        next_step: str,
+        data: str = None,
+        flags: Set[str] = None,
+        output_message: str = None,
+        payload: Payload = None,
+    ):
         """
         :description: Updates query information, should be used instead of directly modifying attributes as some checks are
         in place to validate the new values.
@@ -121,11 +147,15 @@ class Query:
         :rtype: None
         """
         if forward_to not in forward_to_lookup:
-            logger.error(f"Failed to create query as forward_to could not be matched: {forward_to}")
+            logger.error(
+                f"Failed to create query as forward_to could not be matched: {forward_to}"
+            )
             raise InvalidForwardToError
 
         if next_step not in next_step_lookup:
-            logger.error(f"Failed to create query as next_step could not be matched: {next_step}")
+            logger.error(
+                f"Failed to create query as next_step could not be matched: {next_step}"
+            )
             raise InvalidNextStepError
 
         self.forward_to = forward_to

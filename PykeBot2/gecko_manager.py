@@ -32,11 +32,11 @@ def open_session(headless=True) -> WebDriver:
         driver.implicitly_wait(30)
     except WebDriverException:
         if headless:
-            driver = webdriver.Firefox(executable_path=r'D:\Jonathan Decker\PycharmProjects\PykeBotRework\geckodriver'
-                                                       r'.exe', options=options)
+            driver = webdriver.Firefox(
+                executable_path=r"/geckodriver.exe", options=options
+            )
         else:
-            driver = webdriver.Firefox(executable_path=r'D:\Jonathan Decker\PycharmProjects\PykeBotRework\geckodriver'
-                                                       r'.exe')
+            driver = webdriver.Firefox(executable_path=r"/geckodriver.exe")
         driver.implicitly_wait(10)
 
     return driver

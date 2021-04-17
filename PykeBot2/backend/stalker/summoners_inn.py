@@ -7,13 +7,15 @@ import asyncio
 import logging
 import aiohttp
 import bs4
-from backend.stalker.prime_league import stalk_prime_league_team
-from models.data_models import TeamList
+from PykeBot2.backend.stalker.prime_league import stalk_prime_league_team
+from PykeBot2.models.data_models import TeamList
 
 logger = logging.getLogger("pb_logger")
 
 
-async def stalk_summoners_inn_cup(summoners_inn_cup_link: str, session: aiohttp.ClientSession = None):
+async def stalk_summoners_inn_cup(
+    summoners_inn_cup_link: str, session: aiohttp.ClientSession = None
+):
     """
     Takes a link to a summoners inn cup, extracts all team links and uses the prime league team stalker, to stalk the teams.
     :param summoners_inn_cup_link: A valid link to a summoners inn cup like Hausarrest.
@@ -58,9 +60,13 @@ async def stalk_summoners_inn_cup(summoners_inn_cup_link: str, session: aiohttp.
     # team_links = filter(filter_team_links, team_links)
 
     # all valid teams have 'teams' in their ulr and are of a certain length
-    team_links = [link for link in team_links if 'teams' in link and len(link.split("/")) >= 9]
+    team_links = [
+        link for link in team_links if "teams" in link and len(link.split("/")) >= 9
+    ]
 
-    teams = await asyncio.gather(*(stalk_prime_league_team(link, session) for link in team_links))
+    teams = await asyncio.gather(
+        *(stalk_prime_league_team(link, session) for link in team_links)
+    )
 
     filter_teams = [team for team in teams if team]
 

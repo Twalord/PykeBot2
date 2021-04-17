@@ -8,10 +8,10 @@ calling output formatter and checking the context before sending a query to the 
 
 import asyncio
 import logging
-from models.lookup_tables import next_step_lookup
-from models.errors import InvalidNextStepError
-from frontend.command_interpreter import interpret_command
-from frontend.output_formatter import format_payload
+from PykeBot2.models.lookup_tables import next_step_lookup
+from PykeBot2.models.errors import InvalidNextStepError
+from PykeBot2.frontend.command_interpreter import interpret_command
+from PykeBot2.frontend.output_formatter import format_payload
 
 logger = logging.getLogger("pb_logger")
 
@@ -76,14 +76,18 @@ async def frontend_loop(forward_queue: asyncio.Queue, frontend_queue: asyncio.Qu
                 forward_queue.put_nowait(query)
 
             else:
-                logger.error(f"Invalid context_type in query {str(query)}, discarding query.")
+                logger.error(
+                    f"Invalid context_type in query {str(query)}, discarding query."
+                )
                 del query
                 frontend_queue.task_done()
                 continue
 
         else:
             # Next_step can't be handled by frontend, something went wrong
-            logger.error(f"Invalid control flow in frontend master for query {str(query)}, discarding query.")
+            logger.error(
+                f"Invalid control flow in frontend master for query {str(query)}, discarding query."
+            )
             del query
 
         frontend_queue.task_done()

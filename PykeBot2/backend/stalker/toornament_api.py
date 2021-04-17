@@ -10,9 +10,9 @@ import aiohttp
 import bs4
 from typing import List
 
-from models.data_models import TeamList, Team, Player
-from utils import token_loader
-from models.errors import NotFoundResponseError, ServerErrorResponseError
+from PykeBot2.models.data_models import TeamList, Team, Player
+from PykeBot2.utils import token_loader
+from PykeBot2.models.errors import NotFoundResponseError, ServerErrorResponseError
 
 
 logger = logging.getLogger("pb_logger")
@@ -30,19 +30,25 @@ async def stalk_toornament_api_tournament(toornament_link: str) -> TeamList:
     api_token = token_loader.load_token("ToornamentToken")
 
     tournament_id = toornament_link.split("/")[5]
-    participant_resource_url = f"https://api.toornament.com/viewer/v2/tournaments/{tournament_id}/participants"
+    participant_resource_url = (
+        f"https://api.toornament.com/viewer/v2/tournaments/{tournament_id}/participants"
+    )
 
     edited_toornament_link = "/".join(toornament_link.split("/")[:6])
 
     async with aiohttp.ClientSession() as session:
         async with session.get(edited_toornament_link) as response:
             if response.status >= 500:
-                logger.error(f"Stalking {edited_toornament_link} resulted in a server error.")
+                logger.error(
+                    f"Stalking {edited_toornament_link} resulted in a server error."
+                )
                 raise ServerErrorResponseError
 
             # check if toornament page was valid
             if response.status == 404:
-                logger.error(f"No tournament could be found for {edited_toornament_link}.")
+                logger.error(
+                    f"No tournament could be found for {edited_toornament_link}."
+                )
                 raise NotFoundResponseError
 
             page = await response.text()
@@ -51,8 +57,8 @@ async def stalk_toornament_api_tournament(toornament_link: str) -> TeamList:
 
         # extract toornament name
         tournament_name = toornament_soup.select(
-            "#main-container > div.layout-section.header > div > section > div > div.information > div.name > h1")[
-            0].text
+            "#main-container > div.layout-section.header > div > section > div > div.information > div.name > h1"
+        )[0].text
 
         participants = []
         i = 0
@@ -61,10 +67,14 @@ async def stalk_toornament_api_tournament(toornament_link: str) -> TeamList:
             range_to = i * 50 + 49
             i += 1
 
-            headers = {"X-Api-Key": api_token,
-                       "Range": f"participants={range_from}-{range_to}"}
+            headers = {
+                "X-Api-Key": api_token,
+                "Range": f"participants={range_from}-{range_to}",
+            }
 
-            async with session.get(participant_resource_url, headers=headers) as response:
+            async with session.get(
+                participant_resource_url, headers=headers
+            ) as response:
 
                 if response.status == 206 or response.status == 200:
                     response_json = await response.json()
@@ -104,9 +114,11 @@ def parse_participants(participants: List[dict], tournament_name: str) -> TeamLi
                     break
             if summoner_name_field is None:
                 # if summoner_name_field is private or not set, try using the name
-                player_summoner_name = lineup_entry['name']
+                player_summoner_name = lineup_entry["name"]
             else:
-                player_summoner_name = lineup_entry["custom_fields"][summoner_name_field]
+                player_summoner_name = lineup_entry["custom_fields"][
+                    summoner_name_field
+                ]
 
             if player_summoner_name is None:
                 continue
@@ -119,21 +131,25 @@ def parse_participants(participants: List[dict], tournament_name: str) -> TeamLi
     return team_list
 
 
-def fetch_participants(toornament_link: str, api_token:str) -> List[dict]:
+def fetch_participants(toornament_link: str, api_token: str) -> List[dict]:
     tournament_id = toornament_link.split("/")[5]
 
-    participant_resource_url = f"https://api.toornament.com/viewer/v2/tournaments/{tournament_id}/participants"
+    participant_resource_url = (
+        f"https://api.toornament.com/viewer/v2/tournaments/{tournament_id}/participants"
+    )
 
     participants = []
 
     i = 0
     while True:
-        range_from = i*50
-        range_to = i*50 + 49
+        range_from = i * 50
+        range_to = i * 50 + 49
         i += 1
 
-        headers = {"X-Api-Key": api_token,
-                   "Range": f"participants={range_from}-{range_to}"}
+        headers = {
+            "X-Api-Key": api_token,
+            "Range": f"participants={range_from}-{range_to}",
+        }
 
         r = requests.get(participant_resource_url, headers=headers)
 
@@ -151,7 +167,9 @@ def fetch_stages(toornament_link: str, api_token: str):
     tournament_id = toornament_link.split("/")[5]
     headers = {"X-Api-Key": api_token}
 
-    stages_resource_url = f"https://api.toornament.com/viewer/v2/tournaments/{tournament_id}/stages"
+    stages_resource_url = (
+        f"https://api.toornament.com/viewer/v2/tournaments/{tournament_id}/stages"
+    )
 
     r = requests.get(stages_resource_url, headers=headers)
 
@@ -164,15 +182,16 @@ def fetch_stages(toornament_link: str, api_token: str):
 
 def fetch_matches(toornament_link: str, api_token: str):
     tournament_id = toornament_link.split("/")[5]
-    matches_resource_url = f"https://api.toornament.com/viewer/v2/tournaments/{tournament_id}/matches"
+    matches_resource_url = (
+        f"https://api.toornament.com/viewer/v2/tournaments/{tournament_id}/matches"
+    )
 
     i = 0
     while True:
-        range_from = i*128
-        range_to = i*128 + 127
+        range_from = i * 128
+        range_to = i * 128 + 127
         i += 1
-        headers = {"X-Api-Key": api_token,
-                   "Range": f"matches={range_from}-{range_to}"}
+        headers = {"X-Api-Key": api_token, "Range": f"matches={range_from}-{range_to}"}
 
         r = requests.get(matches_resource_url, headers=headers)
 
@@ -185,16 +204,17 @@ def fetch_matches(toornament_link: str, api_token: str):
 
 def fetch_groups(toornament_link: str, api_token: str):
     tournament_id = toornament_link.split("/")[5]
-    group_resource_url = f"https://api.toornament.com/viewer/v2/tournaments/{tournament_id}/groups"
+    group_resource_url = (
+        f"https://api.toornament.com/viewer/v2/tournaments/{tournament_id}/groups"
+    )
 
     groups = []
     i = 0
     while True:
-        range_from = i*50
-        range_to = i*50 + 49
+        range_from = i * 50
+        range_to = i * 50 + 49
         i += 1
-        headers = {"X-Api-Key": api_token,
-                   "Range": f"groups={range_from}-{range_to}"}
+        headers = {"X-Api-Key": api_token, "Range": f"groups={range_from}-{range_to}"}
 
         r = requests.get(group_resource_url, headers=headers)
 
@@ -220,7 +240,7 @@ def fetch_tournament(toornament_link: str) -> str:
 
     # extract toornament name
     tournament_name = toornament_soup.select(
-        "#main-container > div.layout-section.header > div > section > div > div.information > div.name > h1")[
-        0].text
+        "#main-container > div.layout-section.header > div > section > div > div.information > div.name > h1"
+    )[0].text
 
     return tournament_name
