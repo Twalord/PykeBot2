@@ -1,0 +1,14 @@
+[project]
+id = "eg"
+name = "PykeBot2"
+version = "2.2.10"
+
+[build]
+exclude = [
+    ".tox",
+    "docs",
+    "logs",
+    "tests",
+    "venv",
+    "venv_min"
+]
