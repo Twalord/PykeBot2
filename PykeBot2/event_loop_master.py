@@ -5,9 +5,9 @@
 
 import asyncio
 from logging import getLogger
-from frontend import discord_interface, frontend_master
-from backend import backend_master
-from models.lookup_tables import forward_to_lookup
+from PykeBot2.frontend import discord_interface, frontend_master
+from PykeBot2.backend import backend_master
+from PykeBot2.models.lookup_tables import forward_to_lookup
 
 logger = getLogger("pb_logger")
 
