@@ -1,3 +1,15 @@
+# 2.2.11
+20.4.2021
+- Added main.py in root folder as additional entry point
+- Added project.toml to work with Cloud Native Build pack
+- PykeBot2 can now be containerized using 
+  `pack build PykeBot2 --builder gcr.io/buildpacks/builder:v1 --env GOOGLE_ENTRYPOINT="python3 main.py"`
+
+# 2.2.10
+17.04.2021
+- Changed Project structure and moved project code to subfolder PykeBot2
+- Automatic refactoring
+
 # 2.2.9
 19.03.2021
 - Change in Toornament api stalker to use player name if summoner name is not found

@@ -44,7 +44,7 @@ For this a valid Riot API production key is required.
 The API production key must be placed in a filed called file called 'RiotToken' in the project root, similar to the Discord token.
 
 ## How to use
-PykeBot2 can be added to one or multiple Discord server but it also accepts direct messages.
+PykeBot2 can be added to one or multiple Discord server, but it also accepts direct messages.
 PykeBot2 ignores all messages that do not start with `.pb`.
 
 `.pb help` returns a usage explanation.
@@ -57,13 +57,20 @@ When `rank` is added, PykeBot2 will go over every player it found in the tournam
 Adding ranks may take some time as the bot has to go over not only every team but every single player.
 For a full Prime League stalk this may take between 20 and 30 minutes.
 
+## Running PykeBot2 as a container
+PykeBot2 can be run from a container, but you have to build that container yourself first.
+You will need a container engine and cloud natives buildpacks [pack tool](https://buildpacks.io/docs/tools/pack/).
+Clone the project and place your API tokens such as DiscordToken, ToornamentToken and RiotToken in the root folder as usual.
+Next run ```pack build PykeBot2 --builder gcr.io/buildpacks/builder:v1 --env GOOGLE_ENTRYPOINT="python3 main.py"```
+in the root folder of the project. This builds a container image called PykeBot2 which can simply be run using for example docker ``docker run PykeBot2`` .
+
 ## How it works
 PykeBot2 uses Python asyncio to handle user commands asynchronously. 
 This keeps the Discord interface responsive while stalks are performed concurrently.
 Incoming commands are handled as query objects which are forwarded between the different parts of the bot.
 
 The stalkers, which perform the actual gathering of the player information, use html requests via aiohttp whenever possible
-and selenium when necessary. Starting a headless firefox instance is a a lot more expensive in terms of performance
+and selenium when necessary. Starting a headless firefox instance is a lot more expensive in terms of performance
 compared to simply making a few html requests. 
 As is the way with web scraper like this, the stalker might easily break if a tournament platform changes their website.
 As far as I know none of the tournament platforms overs an API for collecting teams and player so all information is collected from html requests.
