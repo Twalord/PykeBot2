@@ -152,10 +152,17 @@ def calc_average_and_max_team_rank(team: Team):
     if len(ranks) == 0:
         average = 0
         max_rank = 0
+        top5_average_rank = 0
     else:
         average = round(sum(ranks) / len(ranks))
         max_rank = max(rank.rank_int for rank in ranks)
+        if len(ranks) < 5:
+            top5_average_rank = average
+        else:
+            ranks.sort(key=lambda r: r.rank_int, reverse=True)
+            top5_average_rank = round(sum(ranks[:5])/5)
 
     team.average_rank = Rank(rank_int=average)
     team.max_rank = Rank(rank_int=max_rank)
+    team.top5_average_rank = Rank(rank_int=top5_average_rank)
     return
