@@ -1,3 +1,7 @@
+# 2.2.12
+- Added average rank of top 5 players per team
+- Teams are now sorted by the top 5 player average rank
+
 # 2.2.11
 20.4.2021
 - Added main.py in root folder as additional entry point

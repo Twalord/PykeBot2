@@ -1,7 +1,6 @@
 [project]
-id = "eg"
 name = "PykeBot2"
-version = "2.2.10"
+version = "2.2.12"
 
 [build]
 exclude = [
