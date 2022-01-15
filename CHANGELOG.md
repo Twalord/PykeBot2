@@ -1,3 +1,6 @@
+# 2.3.0
+- Changed dependency from discord.py to nextcord
+
 # 2.2.12
 - Added average rank of top 5 players per team
 - Teams are now sorted by the top 5 player average rank
