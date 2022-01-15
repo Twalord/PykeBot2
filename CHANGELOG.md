@@ -1,3 +1,6 @@
+# 2.3.1
+- Token loader now removes newlines in tokens which might cause security issues with http headers
+
 # 2.3.0
 - Changed dependency from discord.py to nextcord
 

@@ -72,6 +72,7 @@ def load_token(
 
     if len(token) > 0:
         token_found = True
+        token = token.strip()
 
     if token_found:
         # only prints token to console if hide token is not true
