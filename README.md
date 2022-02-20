@@ -58,11 +58,10 @@ Adding ranks may take some time as the bot has to go over not only every team bu
 For a full Prime League stalk this may take between 20 and 30 minutes.
 
 ## Running PykeBot2 as a container
-PykeBot2 can be run from a container, but you have to build that container yourself first.
-You will need a container engine and cloud natives buildpacks [pack tool](https://buildpacks.io/docs/tools/pack/).
-Clone the project and place your API tokens such as DiscordToken, ToornamentToken and RiotToken in the root folder as usual.
-Next run ```pack build PykeBot2 --builder gcr.io/buildpacks/builder:v1 --env GOOGLE_ENTRYPOINT="python3 main.py"```
-in the root folder of the project. This builds a container image called PykeBot2 which can simply be run using for example docker ``docker run PykeBot2`` .
+Create the files `DiscordToken`, `RiotToken` and `ToornamentToken` in the base directory of the project and
+insert the respective API keys. 
+Using Docker run `docker build -t pykebot2:latest .` to build the image and run it with
+`docker run --rm pykebot2`.
 
 ## How it works
 PykeBot2 uses Python asyncio to handle user commands asynchronously. 
@@ -74,13 +73,6 @@ and selenium when necessary. Starting a headless firefox instance is a lot more 
 compared to simply making a few html requests. 
 As is the way with web scraper like this, the stalker might easily break if a tournament platform changes their website.
 As far as I know none of the tournament platforms overs an API for collecting teams and player so all information is collected from html requests.
-
-## TODO
-
-- add a database (MariaDB) for saving past stalks and to avoid stalking the same tournament multiple times
-- switch from rank stalking via op.gg to the Riot API itself
-- add more tournament platforms
-- add configuration like region
 
 ## Credits
 The PykeBot Icon was designed by the talented [Binidi](https://www.deviantart.com/binidi/art/Pyke-Icon-808245658).
