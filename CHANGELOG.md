@@ -1,3 +1,6 @@
+# 2.3.2
+- PykeBot2 now always sends a message when starting rank stalks
+
 # 2.3.1
 - Token loader now removes newlines in tokens which might cause security issues with http headers
 
