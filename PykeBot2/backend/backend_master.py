@@ -273,11 +273,11 @@ def determine_stalker(query: Query):
 
         found_toornament_api_token = False
         # try loading a Toornament Api Token
-        try:
-            token_loader.load_token("ToornamentToken")
-            found_toornament_api_token = True
-        except TokenLoadingError as e:
-            logger.info("Failed to load ToornamentToken, using HTML scraper.")
+        #try:
+        #    token_loader.load_token("ToornamentToken")
+        #    found_toornament_api_token = True
+        #except TokenLoadingError as e:
+        #    logger.info("Failed to load ToornamentToken, using HTML scraper.")
 
         if (
             found_toornament_api_token

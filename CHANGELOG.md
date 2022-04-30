@@ -1,3 +1,6 @@
+# 2.3.2
+- Toornament API was disabled so the check for the API token has been disabled and the HTML scraper updated
+
 # 2.3.1
 - Token loader now removes newlines in tokens which might cause security issues with http headers
 

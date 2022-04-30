@@ -128,7 +128,7 @@ async def stalk_toornament_team(
         "div > div.title > div > span"
     )[0].text
     name_containers = toornament_soup.find_all(
-        "div", class_="text secondary small summoner_player_id"
+        "div", class_="text standard small summoner_player_id"
     )
 
     players = []
