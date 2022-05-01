@@ -1,4 +1,5 @@
 
 
 if __name__ == "__main__":
-    import PykeBot2.main
+    from PykeBot2.main import start
+    start()
