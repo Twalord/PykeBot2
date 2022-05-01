@@ -4,6 +4,7 @@
 # library
 venv/
 venv_min/
+venv10/
 
 # logs
 *.log
@@ -27,3 +28,11 @@ docs/source/generated/
 docs/build/
 
 /geckodriver.exe
+
+# pytest cache
+*/.pytest_cache
+.pytest_cache
+
+# local tox
+tox.ini
+.tox

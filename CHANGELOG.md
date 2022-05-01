@@ -1,3 +1,8 @@
+# 2.4.0
+- Removed unnecessary files from root folder including riot.txt and project.toml
+- Recreated docs setup to get autodocs working with sphinx
+- Added instructions for building docs to README.md
+
 # 2.3.2
 - Toornament API was disabled so the check for the API token has been disabled and the HTML scraper updated
 

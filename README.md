@@ -74,6 +74,12 @@ compared to simply making a few html requests.
 As is the way with web scraper like this, the stalker might easily break if a tournament platform changes their website.
 As far as I know none of the tournament platforms overs an API for collecting teams and player so all information is collected from html requests.
 
+## Building the docs
+The docs are build using sphinx autodoc. Install `sphinx` using pip.
+Navigate to the `docs/` folder and run `make html` to rebuild the docs.
+
+To add new files to the documentation run in the root folder of the project `sphinx-apidoc -o "docs/source" "./PykeBot2"`
+
 ## Credits
 The PykeBot Icon was designed by the talented [Binidi](https://www.deviantart.com/binidi/art/Pyke-Icon-808245658).
 
