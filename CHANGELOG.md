@@ -1,3 +1,6 @@
+# 2.4.2
+- Cleaned up requirements.txt
+
 # 2.4.1
 - Changed dependency from nextcord back to discord.py
 
