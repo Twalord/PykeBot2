@@ -1,3 +1,6 @@
+# 2.4.1
+- Changed dependency from nextcord back to discord.py
+
 # 2.4.0
 - Removed unnecessary files from root folder including riot.txt and project.toml
 - Recreated docs setup to get autodocs working with sphinx

@@ -6,9 +6,8 @@ beautifulsoup4
 certifi
 chardet
 colorama
-#discord.py
-nextcord
-# idna # specific version requored by requests
+discord.py
+# idna # specific version required by requests
 importlib-metadata
 more-itertools
 multidict

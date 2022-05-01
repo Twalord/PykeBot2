@@ -4,9 +4,9 @@
 import io
 import logging
 import asyncio
-from nextcord.ext import commands
+from discord.ext import commands
 import datetime
-from nextcord import Message, File, Game, __version__
+from discord import Message, File, Game, __version__
 
 from PykeBot2.utils.token_loader import load_token
 from PykeBot2.models.query import Query
@@ -93,7 +93,7 @@ async def run_discord_bot_loop(
     pb.forward_queue = forward_queue
     pb.output_queue = output_queue
     await pb.login(d_token)
-    logger.info(f"Stating Discord Bot, using nextcord.py version {__version__}")
+    logger.info(f"Stating Discord Bot, using discord.py version {__version__}")
     await pb.connect()
 
 
