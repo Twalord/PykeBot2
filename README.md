@@ -1,4 +1,6 @@
 # PykeBot2
+[![Documentation Status](https://readthedocs.org/projects/pykebot2/badge/?version=latest)](https://pykebot2.readthedocs.io/en/latest/?badge=latest)
+[![License](https://img.shields.io/badge/License-MPL_2.0-brightgreen.svg)](https://github.com/Twalord/PykeBot2/blob/master/LICENSE)
 
 ![alt text](./PykeIcon2Resize.png)
 
