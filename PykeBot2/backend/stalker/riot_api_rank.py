@@ -6,9 +6,12 @@ Uses the riot api to fetch the ranks of players
 
 import asyncio
 import logging
+import ssl
+
 import aiohttp
 import time
 import json
+import certifi
 from PykeBot2.models.data_models import Player, Rank, Team, TeamList, TeamListList
 
 logger = logging.getLogger("pb_logger")
@@ -38,7 +41,9 @@ async def stalk_player_riot_api(sum_name: str, api_token: str, session=None) -> 
 
     headers = {"X-Riot-Token": api_token}
 
-    async with await session.get(summoner_resource_url, headers=headers) as r:
+    sslcontext = ssl.create_default_context(cafile=certifi.where())
+
+    async with await session.get(summoner_resource_url, headers=headers, ssl=sslcontext) as r:
         r_json = await r.json()
 
     if r.status == 429:
@@ -53,7 +58,7 @@ async def stalk_player_riot_api(sum_name: str, api_token: str, session=None) -> 
 
     league_resource_url = f"https://euw1.api.riotgames.com/lol/league/v4/entries/by-summoner/{summoner_id}"
 
-    async with await session.get(league_resource_url, headers=headers) as r:
+    async with await session.get(league_resource_url, headers=headers, ssl=sslcontext) as r:
         r_data = await r.read()
     try:
         r_json = json.loads(r_data)

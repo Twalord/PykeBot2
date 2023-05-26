@@ -6,7 +6,7 @@ import logging
 import asyncio
 from discord.ext import commands
 import datetime
-from discord import Message, File, Game, __version__
+from discord import Message, File, Game, __version__, Intents
 
 from PykeBot2.utils.token_loader import load_token
 from PykeBot2.models.query import Query
@@ -39,7 +39,7 @@ class PykeBot(commands.Bot):
 
             # check if send as file, in case of error always skip file flag
             if len(
-                as_file_flag_lookup.intersection(query.flags)
+                    as_file_flag_lookup.intersection(query.flags)
             ) >= 1 and not isinstance(query.payload, Error):
 
                 # prepare file creation
@@ -60,6 +60,9 @@ class PykeBot(commands.Bot):
 
             self.output_queue.task_done()
 
+    async def setup_hook(self) -> None:
+        self.output_queue_listener = self.loop.create_task(self.output_queue_listener())
+
     def __init__(self, *args, **kwargs):
         """
         :description: Initialises the bot without Queues and sets up the output queue listener.
@@ -69,15 +72,17 @@ class PykeBot(commands.Bot):
         :param kwargs:
         :type kwargs:
         """
-        super().__init__(*args, **kwargs, command_prefix=prefix)
-        self.output_queue_listener = self.loop.create_task(self.output_queue_listener())
+        intents = Intents.none()
+        intents.messages = True
+        intents.message_content = True
+        super().__init__(*args, **kwargs, command_prefix=prefix, intents=intents)
 
 
 pb = PykeBot()
 
 
 async def run_discord_bot_loop(
-    forward_queue: asyncio.Queue, output_queue: asyncio.Queue
+        forward_queue: asyncio.Queue, output_queue: asyncio.Queue
 ):
     """
     :description: Main Coroutine for the Discord Bot interface.

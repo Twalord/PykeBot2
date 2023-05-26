@@ -11,7 +11,7 @@ which display further information on the Players and the Rank if possible.
 :author: Jonathan Decker
 """
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import List
 import logging
 from PykeBot2.models.lookup_tables import rank_str_to_int_lookup, rank_int_to_str_lookup
@@ -77,12 +77,13 @@ class Player(Payload):
 
     opgg: str
     summoner_name: str
-    rank: Rank = Rank()
+    rank: Rank = field(default_factory=Rank)
 
     def __init__(self, sum_name):
         self.summoner_name = sum_name
         base_url = "https://" + "euw" + ".op.gg/summoner/userName="
         self.opgg = base_url + self.summoner_name.replace(" ", "")
+        rank = Rank()
 
     def __str__(self):
         if self.rank.rank_int == -1:

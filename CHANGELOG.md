@@ -1,3 +1,8 @@
+# 2.4.3
+- Added intents setting for discord bot setup
+- Fixed SSL error when accessing Riot API
+- Made dataclass usage compatible with Python 3.11
+
 # 2.4.2
 - Cleaned up requirements.txt
 
