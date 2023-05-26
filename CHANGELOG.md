@@ -2,6 +2,7 @@
 - Added intents setting for discord bot setup
 - Fixed SSL error when accessing Riot API
 - Made dataclass usage compatible with Python 3.11
+- Set Dockerfile to use Python 3.11 and Geckodriver 0.33.0
 
 # 2.4.2
 - Cleaned up requirements.txt
