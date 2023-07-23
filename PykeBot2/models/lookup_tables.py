@@ -12,8 +12,8 @@ debug_flag = False
 Version number
 TODO: Keep version number up to date!
 """
-version = "2.4.3"
-last_updated = "26.05.2023"
+version = "2.5.0"
+last_updated = "23.07.2023"
 
 """
 lookup tables for commands and flags
@@ -168,23 +168,31 @@ rank_str_to_int_lookup = {
     "platinum 2": 19,
     "platinum i": 20,
     "platinum 1": 20,
-    "diamond iv": 21,
-    "diamond 4": 21,
-    "diamond iii": 22,
-    "diamond 3": 22,
-    "diamond ii": 23,
-    "diamond 2": 23,
-    "diamond i": 24,
-    "diamond 1": 24,
-    "master": 25,
-    "master 1": 25,
-    "master i": 25,
-    "grandmaster": 26,
-    "grandmaster 1": 26,
-    "grandmaster i": 26,
-    "challenger": 27,
-    "challenger 1": 27,
-    "challenger i": 27,
+    "emerald 4": 21,
+    "emerald iv": 21,
+    "emerald 3": 22,
+    "emerald iii": 22,
+    "emerald 2": 23,
+    "emerald ii": 23,
+    "emerald 1": 24,
+    "emerald i": 24,
+    "diamond iv": 25,
+    "diamond 4": 25,
+    "diamond iii": 26,
+    "diamond 3": 26,
+    "diamond ii": 27,
+    "diamond 2": 27,
+    "diamond i": 28,
+    "diamond 1": 28,
+    "master": 29,
+    "master 1": 29,
+    "master i": 29,
+    "grandmaster": 30,
+    "grandmaster 1": 30,
+    "grandmaster i": 30,
+    "challenger": 31,
+    "challenger 1": 31,
+    "challenger i": 31,
 }
 
 rank_int_to_str_lookup = {
@@ -209,11 +217,15 @@ rank_int_to_str_lookup = {
     18: "Platinum 3",
     19: "Platinum 2",
     20: "Platinum 1",
-    21: "Diamond 4",
-    22: "Diamond 3",
-    23: "Diamond 2",
-    24: "Diamond 1",
-    25: "Master",
-    26: "Grandmaster",
-    27: "Challenger",
+    21: "Emerald 4",
+    22: "Emerald 3",
+    23: "Emerald 2",
+    24: "Emerald 1",
+    25: "Diamond 4",
+    26: "Diamond 3",
+    27: "Diamond 2",
+    28: "Diamond 1",
+    29: "Master",
+    30: "Grandmaster",
+    31: "Challenger",
 }

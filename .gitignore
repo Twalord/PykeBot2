@@ -2,9 +2,7 @@
 .idea/
 
 # library
-venv/
-venv_min/
-venv10/
+venv*/
 
 # logs
 *.log
@@ -14,6 +12,7 @@ venv10/
 
 # discord Token
 /DiscordToken
+/DiscordToken.prod
 
 # Toornament Token
 /ToornamentToken

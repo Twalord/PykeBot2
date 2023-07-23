@@ -1,3 +1,7 @@
+# 2.5.0
+- Added Support for Emerald rank
+- Bumped dependency versions for discord.py and aiohttp
+
 # 2.4.3
 - Added intents setting for discord bot setup
 - Fixed SSL error when accessing Riot API
