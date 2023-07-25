@@ -22,7 +22,7 @@ def open_session(headless=True) -> WebDriver:
     :rtype: selenium.webdriver
     """
     options = Options()
-    options.add_argument("--headless")
+    options.add_argument("--headless=new")
 
     service = FirefoxService(GeckoDriverManager().install())
 

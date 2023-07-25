@@ -12,7 +12,7 @@ debug_flag = False
 Version number
 TODO: Keep version number up to date!
 """
-version = "2.6.0"
+version = "2.6.1"
 last_updated = "25.07.2023"
 
 """

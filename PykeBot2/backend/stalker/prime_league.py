@@ -9,6 +9,7 @@ import time
 import aiohttp
 import bs4
 from selenium.webdriver.common.by import By
+from selenium.common.exceptions import NoSuchElementException
 from PykeBot2.models.data_models import TeamList, Team, Player, TeamListList
 from selenium.common.exceptions import ElementClickInterceptedException
 from PykeBot2 import gecko_manager
@@ -146,7 +147,7 @@ async def stalk_prime_league_group(
     # Select Rangliste Container and find division name
     soup = bs4.BeautifulSoup(page, features="html.parser")
     list_container = soup.find(
-        "table", class_="table table-fixed-single table-responsive"
+        "table", class_="table table-ranking"
     )
 
     # extra case for swiss starter since it uses a different table and needs selenium as far as I know
@@ -155,18 +156,29 @@ async def stalk_prime_league_group(
 
         driver.get(prime_league_group_link)
 
+        # wait a moment for the full page to load
+        time.sleep(1)
+
+        # click away cookie banner
+        try:
+            cookie_no_button = driver.find_element(By.XPATH, '//*[@id="uc-btn-deny-banner"]')
+            cookie_no_button.click()
+        except NoSuchElementException as e:
+            # if there is no cookie banner just proceed
+            pass
+
         # first make sure all tables are loaded by clicking on arrow button until no longer possible
-        next_button = driver.find_element(
-            By.XPATH, '//*[@id="league-swiss-ranking-tab-main"]/div[2]/div[2]/a[3]'
-        )
+        try:
+            next_button = driver.find_element(By.XPATH, '//*[@id="league-swiss-ranking-tab-main"]/div[2]/div[2]/a[3]')
 
-        while next_button.get_attribute("class") == "nav-next":
-            next_button.click()
+            while next_button.get_attribute("class") == "nav-next":
+                next_button.click()
 
-        # jump back to first page
-        driver.find_element(
-            By.XPATH, '//*[@id="league-swiss-ranking-tab-main"]/div[2]/div[2]/a[1]/i'
-        ).click()
+            # jump back to first page
+            driver.find_element(By.XPATH, '//*[@id="league-swiss-ranking-tab-main"]/div[2]/div[2]/a[1]/i').click()
+        except NoSuchElementException as e:
+            # if there is no next button then all elements must be already loaded
+            pass
 
         soup = bs4.BeautifulSoup(driver.page_source, features="html.parser")
 
@@ -190,8 +202,7 @@ async def stalk_prime_league_group(
         team_links = [link["href"] for link in soup.find_all("a", href=True)]
         team_links = filter(filter_team_links, team_links)
 
-    # div_name = driver.find_element_by_xpath("//*[@id=\"container\"]/div/h1").text
-    div_name = soup.select("#container > div > h1")[0].text
+    div_name = soup.select(".page-title > h1:nth-child(1)")[0].text
 
     team_links = list(dict.fromkeys(team_links))
 

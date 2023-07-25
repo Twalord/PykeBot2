@@ -1,3 +1,6 @@
+# 2.6.1
+- Fixed prime league group stalking
+
 # 2.6.0
 - Added support for League Points in Ranks
 - Now displays League Points for Master+ players
