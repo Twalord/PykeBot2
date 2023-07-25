@@ -8,6 +8,7 @@ import logging
 import time
 import aiohttp
 import bs4
+from selenium.webdriver.common.by import By
 from PykeBot2.models.data_models import TeamList, Team, Player, TeamListList
 from selenium.common.exceptions import ElementClickInterceptedException
 from PykeBot2 import gecko_manager
@@ -33,7 +34,7 @@ async def stalk_prime_league_season(prime_league_season_link: str, headless=True
     driver.get(prime_league_season_link)
 
     # Select Gruppenphase Container
-    div_button_list = driver.find_elements_by_class_name("content-subsection")
+    div_button_list = driver.find_elements(By.CLASS_NAME, "content-subsection")
     # division 1 and 2 are expanded by default
     # with starter division it takes exactly 5 clicks
     click_counter = 5
@@ -45,7 +46,7 @@ async def stalk_prime_league_season(prime_league_season_link: str, headless=True
             click_counter -= 1
         except ElementClickInterceptedException:
             # footer-bottom is in the way, so execute some js to remove visibility
-            footer_bottom = driver.find_element_by_xpath('//*[@id="footer-bottom"]')
+            footer_bottom = driver.find_element(By.XPATH, '//*[@id="footer-bottom"]')
             driver.execute_script(
                 "arguments[0].setAttribute('style','display:none;');", footer_bottom
             )
@@ -155,16 +156,16 @@ async def stalk_prime_league_group(
         driver.get(prime_league_group_link)
 
         # first make sure all tables are loaded by clicking on arrow button until no longer possible
-        next_button = driver.find_element_by_xpath(
-            '//*[@id="league-swiss-ranking-tab-main"]/div[2]/div[2]/a[3]'
+        next_button = driver.find_element(
+            By.XPATH, '//*[@id="league-swiss-ranking-tab-main"]/div[2]/div[2]/a[3]'
         )
 
         while next_button.get_attribute("class") == "nav-next":
             next_button.click()
 
         # jump back to first page
-        driver.find_element_by_xpath(
-            '//*[@id="league-swiss-ranking-tab-main"]/div[2]/div[2]/a[1]/i'
+        driver.find_element(
+            By.XPATH, '//*[@id="league-swiss-ranking-tab-main"]/div[2]/div[2]/a[1]/i'
         ).click()
 
         soup = bs4.BeautifulSoup(driver.page_source, features="html.parser")

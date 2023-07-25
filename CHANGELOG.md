@@ -1,3 +1,8 @@
+# 2.6.0
+- Added support for League Points in Ranks
+- Now displays League Points for Master+ players
+- Team averages are calculated while considering LP of Master+ players with 100 LP being equal to 1 division
+
 # 2.5.0
 - Added Support for Emerald rank
 - Bumped dependency versions for discord.py and aiohttp

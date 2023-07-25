@@ -12,8 +12,8 @@ debug_flag = False
 Version number
 TODO: Keep version number up to date!
 """
-version = "2.5.0"
-last_updated = "23.07.2023"
+version = "2.6.0"
+last_updated = "25.07.2023"
 
 """
 lookup tables for commands and flags
@@ -229,3 +229,6 @@ rank_int_to_str_lookup = {
     30: "Grandmaster",
     31: "Challenger",
 }
+
+# A rank value of this or higher means LP has to be considered for the ranking
+lp_ranker_threshold = 29

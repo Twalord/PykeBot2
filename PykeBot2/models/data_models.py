@@ -14,7 +14,7 @@ which display further information on the Players and the Rank if possible.
 from dataclasses import dataclass, field
 from typing import List
 import logging
-from PykeBot2.models.lookup_tables import rank_str_to_int_lookup, rank_int_to_str_lookup
+from PykeBot2.models.lookup_tables import rank_str_to_int_lookup, rank_int_to_str_lookup, lp_ranker_threshold
 from PykeBot2.models.errors import PayloadCreationError
 
 logger = logging.getLogger("pb_logger")
@@ -50,8 +50,10 @@ class Rank:
 
     rank_string = "Unknown"
     rank_int = -1
+    lp = -1
+    lp_ranker = False
 
-    def __init__(self, rank_string: str = None, rank_int: int = None):
+    def __init__(self, rank_string: str = None, rank_int: int = None, lp: int = -1):
         if rank_string is not None:
             self.rank_int = rank_str_to_int_lookup.get(rank_string.lower(), -1)
             # this ensures that the rank is always written the same way
@@ -61,12 +63,27 @@ class Rank:
             self.rank_int = rank_int
             self.rank_string = rank_int_to_str_lookup.get(rank_int, "Unknown")
 
+        if lp >= 0:
+            self.lp = lp
+
+        if self.rank_int >= lp_ranker_threshold:
+            self.lp_ranker = True
+
     def __str__(self):
-        return self.rank_string
+        if self.lp_ranker:
+            return f"{self.rank_string} {self.lp}"
+        else:
+            return self.rank_string
+
+    def __int__(self) -> int:
+        # For master+ players increase the rank value by 1 for every 100 lp
+        if self.lp_ranker:
+            return lp_ranker_threshold + (self.lp // 100)
+        return self.rank_int
 
     def __radd__(self, other):
         # For summing up ranks during average rank calculation
-        return other + self.rank_int
+        return other + int(self)
 
 
 @dataclass

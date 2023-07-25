@@ -1,20 +1,21 @@
 """
 Offers utility to open a firefox webdriver.
-Geckodriver should be in PATH for this.
+Uses webdriver-manager to acquire Geckodriver.
 
 :author: Jonathan Decker
 """
 
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
-from selenium.webdriver.common.service import WebDriverException
+from selenium.webdriver.firefox.service import Service as FirefoxService
 from selenium.webdriver.firefox.webdriver import WebDriver
+from webdriver_manager.firefox import GeckoDriverManager
 
 
 def open_session(headless=True) -> WebDriver:
     """
     :description: Opens a Selenium Firefox web session.
-    Attempts to find geckodriver from PATH, if it fails uses a static path.
+    Uses webdriver-manager to acquire Geckodriver.
     :param headless: Set whether the web session should be headless or not.
     :type headless: bool
     :return: A new firefox webdriver.
@@ -23,21 +24,14 @@ def open_session(headless=True) -> WebDriver:
     options = Options()
     options.add_argument("--headless")
 
+    service = FirefoxService(GeckoDriverManager().install())
+
     # opens a web session and returns the webdriver
-    try:
-        if headless:
-            driver = webdriver.Firefox(options=options)
-        else:
-            driver = webdriver.Firefox()
-        driver.implicitly_wait(30)
-    except WebDriverException:
-        if headless:
-            driver = webdriver.Firefox(
-                executable_path=r"/geckodriver.exe", options=options
-            )
-        else:
-            driver = webdriver.Firefox(executable_path=r"/geckodriver.exe")
-        driver.implicitly_wait(10)
+    if headless:
+        driver = webdriver.Firefox(options=options, service=service)
+    else:
+        driver = webdriver.Firefox(service=service)
+    driver.implicitly_wait(30)
 
     return driver
 

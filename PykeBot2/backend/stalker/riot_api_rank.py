@@ -17,7 +17,7 @@ from PykeBot2.models.data_models import Player, Rank, Team, TeamList, TeamListLi
 logger = logging.getLogger("pb_logger")
 
 
-async def stalk_player_riot_api(sum_name: str, api_token: str, session=None) -> str:
+async def stalk_player_riot_api(sum_name: str, api_token: str, session=None) -> (str, int):
     """
     Uses the riot api to find the soloQ ranking of the given player.
     :param sum_name: Summoner name of the player.
@@ -26,8 +26,8 @@ async def stalk_player_riot_api(sum_name: str, api_token: str, session=None) -> 
     :type api_token: str
     :param session: When a session already exits, it should be reused as much as possible for better performance.
     :type session: aiohttp.ClientSession or RateLimiter
-    :return: String representation of the rank of the player.
-    :rtype: str
+    :return: Tuple with string representation of the rank of the player and the current lp or -1 if not found.
+    :rtype: (str, int)
     """
 
     if session is None:
@@ -54,7 +54,7 @@ async def stalk_player_riot_api(sum_name: str, api_token: str, session=None) -> 
         return await stalk_player_riot_api(sum_name, api_token, session)
     summoner_id = r_json.get("id", "None")
     if summoner_id == "None":
-        return ""
+        return "", -1
 
     league_resource_url = f"https://euw1.api.riotgames.com/lol/league/v4/entries/by-summoner/{summoner_id}"
 
@@ -64,7 +64,7 @@ async def stalk_player_riot_api(sum_name: str, api_token: str, session=None) -> 
         r_json = json.loads(r_data)
     except json.JSONDecodeError:
         logger.error(f"Decoding failed for {r_data}")
-        return ""
+        return "", -1
 
     if r.status == 429:
         logger.debug(
@@ -76,19 +76,21 @@ async def stalk_player_riot_api(sum_name: str, api_token: str, session=None) -> 
     if type(r_json) is dict:
         r_json = [r_json]
     elif type(r_json) is None:
-        return ""
+        return "", -1
     tier = ""
     rank = ""
+    lp = -1
     for league in r_json:
         queue_type = league.get("queueType", "None")
         if queue_type == "RANKED_SOLO_5x5":
             tier = league["tier"]
             rank = league["rank"]
+            lp = league["leaguePoints"]
             break
     if tier == "":
         # logger.debug(f"{sum_name} has no rank. {r_json}")
-        return ""
-    return f"{tier} {rank}"
+        return "", -1
+    return f"{tier} {rank}", lp
 
 
 async def add_player_rank(player: Player, api_token: str, session=None):
@@ -108,11 +110,8 @@ async def add_player_rank(player: Player, api_token: str, session=None):
             session = RateLimiter(session)
             return await add_player_rank(player, api_token, session)
 
-    player.rank = Rank(
-        rank_string=await stalk_player_riot_api(
-            player.summoner_name, api_token, session
-        )
-    )
+    rank_string, lp = await stalk_player_riot_api(player.summoner_name, api_token, session)
+    player.rank = Rank(rank_string=rank_string, lp=lp)
     return
 
 
@@ -210,19 +209,20 @@ def calc_average_and_max_team_rank(team: Team):
 
     if len(ranks) == 0:
         average = 0
-        max_rank = 0
+        max_rank = Rank(rank_int=0)
         top5_average_rank = 0
     else:
         average = round(sum(ranks) / len(ranks))
-        max_rank = max(rank.rank_int for rank in ranks)
+        #max_rank = max(int(rank) for rank in ranks)
+        max_rank = max(team.players, key=lambda p: int(p.rank)).rank
         if len(ranks) < 5:
             top5_average_rank = average
         else:
-            ranks.sort(key=lambda r: r.rank_int, reverse=True)
+            ranks.sort(key=lambda r: int(r), reverse=True)
             top5_average_rank = round(sum(ranks[:5])/5)
 
     team.average_rank = Rank(rank_int=average)
-    team.max_rank = Rank(rank_int=max_rank)
+    team.max_rank = Rank(rank_int=max_rank.rank_int, lp=max_rank.lp)
     team.top5_average_rank = Rank(rank_int=top5_average_rank)
     return
 
