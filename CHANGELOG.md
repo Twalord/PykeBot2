@@ -1,3 +1,6 @@
+# 2.6.2
+- Fix to calculation of average and max rank for master+ teams
+
 # 2.6.1
 - Fixed prime league group stalking
 

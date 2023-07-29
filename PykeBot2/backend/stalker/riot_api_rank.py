@@ -214,16 +214,17 @@ def calc_average_and_max_team_rank(team: Team):
     else:
         average = round(sum(ranks) / len(ranks))
         #max_rank = max(int(rank) for rank in ranks)
-        max_rank = max(team.players, key=lambda p: int(p.rank)).rank
+        max_rank = max(team.players, key=lambda p: p.rank.rank_int + (p.rank.lp / 100)).rank
+
         if len(ranks) < 5:
             top5_average_rank = average
         else:
             ranks.sort(key=lambda r: int(r), reverse=True)
             top5_average_rank = round(sum(ranks[:5])/5)
 
-    team.average_rank = Rank(rank_int=average)
+    team.average_rank = Rank(rank_int=average, default_for_master_plus=True)
     team.max_rank = Rank(rank_int=max_rank.rank_int, lp=max_rank.lp)
-    team.top5_average_rank = Rank(rank_int=top5_average_rank)
+    team.top5_average_rank = Rank(rank_int=top5_average_rank, default_for_master_plus=True)
     return
 
 

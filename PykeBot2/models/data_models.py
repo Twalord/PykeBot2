@@ -53,12 +53,12 @@ class Rank:
     lp = -1
     lp_ranker = False
 
-    def __init__(self, rank_string: str = None, rank_int: int = None, lp: int = -1):
+    def __init__(self, rank_string: str = None, rank_int: int = None, lp: int = -1,
+                 default_for_master_plus: bool = False):
         if rank_string is not None:
             self.rank_int = rank_str_to_int_lookup.get(rank_string.lower(), -1)
             # this ensures that the rank is always written the same way
             self.rank_string = rank_int_to_str_lookup.get(self.rank_int, "Unknown")
-
         elif rank_int is not None:
             self.rank_int = rank_int
             self.rank_string = rank_int_to_str_lookup.get(rank_int, "Unknown")
@@ -68,6 +68,12 @@ class Rank:
 
         if self.rank_int >= lp_ranker_threshold:
             self.lp_ranker = True
+
+        if lp == -1 and self.lp_ranker:
+            self.lp = (self.rank_int - lp_ranker_threshold) * 100
+
+        if default_for_master_plus and self.lp_ranker:
+            self.rank_string = "Master+"
 
     def __str__(self):
         if self.lp_ranker:
