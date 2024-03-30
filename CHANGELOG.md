@@ -1,3 +1,6 @@
+# 2.6.3
+- Fix for toornament stalking to work with change in html selector for toornament titles
+
 # 2.6.2
 - Fix to calculation of average and max rank for master+ teams
 

@@ -57,7 +57,7 @@ async def stalk_toornament_tournament(toornament_link: str):
 
         # extract toornament name
         tournament_name = toornament_soup.select(
-            "#main-container > div.layout-section.header > div > section > div > div.information > div.name > h1"
+            "#main-container > div.layout-section.header.highlight > div > section > div > div.information > h1"
         )[0].text
 
         # multiple team page test
