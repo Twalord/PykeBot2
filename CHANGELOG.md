@@ -1,3 +1,6 @@
+# 2.6.4
+- Upgraded dependencies versions to patch vulnerabilities
+
 # 2.6.3
 - Fix for toornament stalking to work with change in html selector for toornament titles
 
